@@ -1,5 +1,4 @@
 <?php
-	require 'includes/conf_db.inc.php';
 	include('includes/display.inc.php');
 	include('includes/functions.inc.php');
 ?>
@@ -18,24 +17,16 @@
 		<h1> COMMUNITY LIFE MANAGER </h1>
 
 		<?php
-			// Create connection
-			$connection = new mysqli($host, $login, $password, $dbname);
-			// Check connection
-			if ($connection->connect_error) {
-			    die("Connection failed: " . $connection->connect_error);
+		db_connection();
+		echo connectionForm();
+		if(isset($_POST['connect'])) {
+			if($_POST['login'] != "" && $_POST['password'] != "") {
+				echo('<p style="color: red;"> Connexion. </p>');
 			}
-
-			$query = "SELECT * FROM users";
-			$result = $connection->query($query);
-
-			if ($result->num_rows > 0) {
-    				// output data of each row
-    				while($row = $result->fetch_assoc()) {
-        				echo "Role: " . $row["role"]. "<br/> Login: " . $row["login"]. "<br/> Password: " . $row["pass"]. "<br/>";
-    				}
-			} else {
-    				echo "0 results";
+			else {
+				echo('<p style="color: red;"> Veuillez renseigner vos identifiants svp. </p>');
 			}
+		}
 		?>
 	</body>
 

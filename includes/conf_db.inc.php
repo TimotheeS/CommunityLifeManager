@@ -1,5 +1,5 @@
 <?php
-	//Data base conection parameters 
+	//Paramètres de connexion à la base de données
 	$host = '10.40.128.23';
 	$port = '3306';
 	$dbname = 'db2018l3idwa_rdessain';
