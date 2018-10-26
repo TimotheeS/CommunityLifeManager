@@ -1,5 +1,8 @@
+/*-----------------PAGE-----------------*/
+
 body {
 	margin: 0;
+	font-family: verdana;
 }
 
 /*-----------------BANNER----------------*/
@@ -14,7 +17,7 @@ header {
 	height: 300px;
 }
 
-/*----------------------------------------*/
+/*-----------------TITLES-----------------*/
 
 h1 {
 	text-align: center;
@@ -22,6 +25,10 @@ h1 {
 
 h2 {
 	text-align: center;
+}
+
+h3 {
+	margin-bottom: 0;
 }
 
 /*--------VERTICAL NAVIGATION BAR--------*/
@@ -47,6 +54,31 @@ ul.v li a {
 ul.v li a:hover {
 	background-color: #555;
 	color: white;
+}
+
+/*------------------TABLE-----------------*/
+
+table {
+	margin-left: auto;
+	margin-right: auto;
+	border: 1px solid black;
+	border-collapse: collapse;
+}
+
+td {
+	border: 1px solid black;
+	text-align: center;
+	padding: 10px;
+}
+
+td.nb {
+	border: none;
+}
+
+/*-----------------BUTTON-----------------*/
+
+input[type = submit] {
+	padding: 10px;
 }
 
 /*----------------------------------------*/
