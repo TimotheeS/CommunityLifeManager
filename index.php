@@ -33,27 +33,8 @@
 		}
 
 		echo connectionForm();
+		echo connection($connection);
 
-		if(isset($_POST['connect'])) {
-			if($_POST['login'] != "" && $_POST['password'] != "") {
-				$login = $_POST['login'];
-				$password = $_POST['password'];
-				//$query = "SELECT * FROM users";
-				$query = "SELECT * FROM users WHERE login = '$login' AND pass = '$password'";
-				$result = $connection->query($query);
-				if ($result->num_rows > 0) {
-					while($row = $result->fetch_assoc()) {
-				  		echo('<p style="color: red;"> Identifiants corrects. </p>');
-					}
-				} else {
-					echo('<p style="color: red;"> Identifiants incorrects. </p>');
-				}
-				$connection->close();
-			}
-			else {
-				echo('<p style="color: red;"> Veuillez renseigner vos identifiants svp. </p>');
-			}
-		}
 		?>
 	</body>
 

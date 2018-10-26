@@ -14,6 +14,7 @@ function db_connection() {
 
 /*-----------------------------------------------------------------------------*/
 
+//fonction d'affichage du formulaire de connexion
 function connectionForm() {
 	$return = '<form action = "#" method = "POST">';
 	$return .= '<table>';
@@ -30,6 +31,39 @@ function connectionForm() {
 	$return .= '</tr>';
 	$return .= '</table>';
 	$return .= '</form>';
+	return $return;
+}
+
+//fonction de vérification des identifiants/mots de passe dans la base de données
+function connection($connection) {
+	$return = null;
+	if(isset($_POST['connect'])) {
+		if($_POST['login'] != "" && $_POST['password'] != "") {
+			$login = $_POST['login'];
+			$password = $_POST['password'];
+			$query = "SELECT * FROM users WHERE login = '$login' AND pass = '$password'";
+			$result = $connection->query($query);
+			if ($result->num_rows > 0) {
+				while($row = $result->fetch_assoc()) {
+					$return = '<p style="color: red;"> Identifiants corrects. </p>';
+				}
+			} else {
+				$return = '<p style="color: red;"> Identifiants incorrects. </p>';
+			}
+			$connection->close();
+		}
+		else {
+			if($_POST['login'] == "" && $_POST['password'] != "") {
+				$return = '<p style="color: red;"> Veuillez renseigner votre identifiant svp. </p>';
+			}
+			else if($_POST['login'] != "" && $_POST['password'] == "") {
+				$return = '<p style="color: red;"> Veuillez renseigner votre mot de passe svp. </p>';
+			}
+			else {
+				$return = '<p style="color: red;"> Veuillez renseigner votre identifiant et votre mot de passe svp. </p>';
+			}
+		}
+	}
 	return $return;
 }
 
