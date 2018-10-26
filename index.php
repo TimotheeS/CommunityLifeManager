@@ -18,7 +18,7 @@
 		<h1> COMMUNITY LIFE MANAGER </h1>
 
 		<?php
-			// Create connection
+			// Create connection //
 			$connection = new mysqli($host, $login, $password, $dbname);
 			// Check connection
 			if ($connection->connect_error) {
