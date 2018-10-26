@@ -1,5 +1,7 @@
 <?php
 
+/*-----------------------------------------------------------------------------*/
+
 //fonction de connexion à la base de données
 function db_connection() {
 	require 'conf_db.inc.php';
@@ -19,15 +21,15 @@ function connectionForm() {
 	$return = '<form action = "#" method = "POST">';
 	$return .= '<table>';
 	$return .= '<tr>';
-	$return .= '<td colspan=2 style = "text-align: center;"> Connectez-vous </td>';
+	$return .= '<td class="nb" colspan=2> <h3> Connectez-vous </h3> </td>';
 	$return .= '</tr> <tr>';
 	$return .= '<td> Identifiant : </td>';
-	$return .= '<td> <input type="text" name="login"> </td>';
+	$return .= '<td> <input type="text" name="login" autocomplete="off"> </td>';
 	$return .= '</tr> <tr>';
 	$return .= '<td> Mot de passe : </td>';
-	$return .= '<td> <input type="password" name="password"> </td>';
+	$return .= '<td> <input type="password" name="password" autocomplete="off"> </td>';
 	$return .= '</tr> <tr>';
-	$return .= '<td colspan=2 style = "text-align: center;"> <input type="submit" value="Se connecter" name="connect"> </td>';
+	$return .= '<td class="nb" colspan=2> <input type="submit" value="Se connecter" name="connect"> </td>';
 	$return .= '</tr>';
 	$return .= '</table>';
 	$return .= '</form>';
@@ -64,7 +66,10 @@ function connection($connection) {
 			}
 		}
 	}
+	$return = '<table> <tr> <td>' .$return .'</td> </tr> </table>';
 	return $return;
 }
+
+/*-----------------------------------------------------------------------------*/
 
 ?>
