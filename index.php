@@ -19,23 +19,20 @@
 
 		<?php
 
-		require 'includes/conf_db.inc.php';
-		//création de la connexion
-		$connection = new mysqli($host, $login, $password, $dbname);
-		//vérification de la connexion
-		if ($connection->connect_error) {
-		    die("Connection failed: " . $connection->connect_error);
-		}
-
-		if ($connection->connect_errno) {
-    			printf("Connect failed: %s\n", $connection->connect_error);
-    			exit();
-		}
-
-		echo connectionForm();
-		echo connection($connection);
+		$connection = db_connection();
 
 		?>
+
+		<section>
+			section
+		</section>
+
+		<aside>
+			<?php
+			echo connectionForm();
+			echo connection($connection);
+			?>
+		</aside>
 	</body>
 
 </html>

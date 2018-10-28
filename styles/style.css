@@ -5,6 +5,18 @@ body {
 	font-family: verdana;
 }
 
+section {
+	width: 69%;
+	float : left;
+	border-right: 1px solid black;
+	min-height: 1000px;
+}
+
+aside {
+	width: 30%;
+	float: right;
+}
+
 /*-----------------BANNER----------------*/
 
 header {
