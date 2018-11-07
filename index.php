@@ -2,6 +2,8 @@
 	include('includes/display.inc.php');
 	include('includes/functions.inc.php');
 	require 'includes/conf_db.inc.php';
+
+	session_start();
 ?>
 
 <html lang = "fr">
@@ -23,8 +25,14 @@
 
 		?>
 
+		<div id = "banner">
+			<?php
+				echo sessionInformation();
+			?>
+		</div>
+
 		<section>
-			section
+
 		</section>
 
 		<aside>

@@ -19,7 +19,7 @@ function db_connection() {
 //fonction d'affichage du formulaire de connexion
 function connectionForm() {
 	$return = '<form action = "#" method = "POST">';
-	$return .= '<table>';
+	$return .= '<table class = "centered bordered">';
 	$return .= '<tr>';
 	$return .= '<td class="nb" colspan=2> <h3> Connectez-vous </h3> </td>';
 	$return .= '</tr> <tr>';
@@ -48,6 +48,10 @@ function connection($connection) {
 			if ($result->num_rows > 0) {
 				while($row = $result->fetch_assoc()) {
 					$return = '<p style="color: red;"> Identifiants corrects. </p>';
+					session_start();
+					$_SESSION['connected'] = true;
+	                    $_SESSION['login'] = $login;
+					header('location: index.php');
 				}
 			} else {
 				$return = '<p style="color: red;"> Identifiants incorrects. </p>';
@@ -66,7 +70,20 @@ function connection($connection) {
 			}
 		}
 	}
-	$return = '<table> <tr> <td>' .$return .'</td> </tr> </table>';
+	$return = '<table class = "centered"> <tr> <td>' .$return .'</td> </tr> </table>';
+	return $return;
+}
+
+function sessionInformation() {
+	$return = '<table>';
+	$return .= '<tr>';
+	if(!isset($_SESSION['connected'])) {
+		$return .= "<td class = 'nb'> Vous n'etes pas connecté. </td>";
+	} else if(isset($_SESSION['connected']) && $_SESSION['connected'] = true) {
+		$return .= '<td class = "nb"> Connecté en tant que : ' .$_SESSION['login'] .'</td>';
+	}
+	$return .= '</tr>';
+	$return .= '</table>';
 	return $return;
 }
 

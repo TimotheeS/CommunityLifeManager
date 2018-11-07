@@ -5,16 +5,29 @@ body {
 	font-family: verdana;
 }
 
+#banner {
+	width: 100%;
+	min-height: 100px;
+	margin-top: 10px;
+	margin-bottom: 10px;
+	border-top: 1px solid black;
+	border-bottom: 1px solid black;
+}
+
 section {
 	width: 69%;
 	float : left;
-	border-right: 1px solid black;
-	min-height: 1000px;
+	border: 1px solid black;
+	border-left: none;
+	min-height: 500px;
 }
 
 aside {
 	width: 30%;
 	float: right;
+	border: 1px solid black;
+	border-right: none;
+	min-height: 500px;
 }
 
 /*-----------------BANNER----------------*/
@@ -70,9 +83,12 @@ ul.v li a:hover {
 
 /*------------------TABLE-----------------*/
 
-table {
+table.centered {
 	margin-left: auto;
 	margin-right: auto;
+}
+
+table.bordered {
 	border: 1px solid black;
 	border-collapse: collapse;
 }
