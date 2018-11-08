@@ -1,8 +1,7 @@
 <?php
 	include('includes/display.inc.php');
 	include('includes/functions.inc.php');
-	require 'includes/conf_db.inc.php';
-
+	
 	session_start();
 ?>
 
@@ -20,7 +19,6 @@
 		<h1> COMMUNITY LIFE MANAGER </h1>
 
 		<?php
-
 		$connection = db_connection();
 
 		?>

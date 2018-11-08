@@ -51,7 +51,7 @@ function connection($connection) {
 					session_start();
 					$_SESSION['user_connected'] = true;
 	                    $_SESSION['user_login'] = $login;
-					$query = "SELECT useuser_name, user_forename FROM users WHERE login = '$login' AND pass = '$password'";
+					$query = "SELECT user_name, user_forename FROM users WHERE login = '$login' AND pass = '$password'";
 					$result = $connection->query($query);
 					while($row = $result->fetch_assoc()) {
 						$_SESSION['user_name'] = $row['user_name'];
@@ -85,7 +85,7 @@ function sessionInformation() {
 	$return .= '<tr>';
 	if(!isset($_SESSION['user_connected'])) {
 		$return .= '<td class = "nb"> Vous n\'etes pas connecté. </td>';
-	} else if(isset($_SESSION['user_connected']) && $_SESSION['user_connected'] = true) {
+	} else if(isset($_SESSION['user_connected']) && $_SESSION['user_connected'] == true) {
 		$return .= '<td class = "nb"> Connecté en tant que : </td>';
 		$return .= '<td class = "nb">' .$_SESSION['user_forename'] .' ' .$_SESSION['user_name'] .'</td>';
 		$return .= '<td class = "nb"> <form action="pages/log_out.php" method="POST"> <input type="submit" value="Se déconnecter" name="log_out"> </form> </td>';
