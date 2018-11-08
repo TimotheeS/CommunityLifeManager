@@ -32,7 +32,9 @@
 		</div>
 
 		<section>
-
+			<?php
+			echo createOrganizationForm();
+			?>
 		</section>
 
 		<aside>

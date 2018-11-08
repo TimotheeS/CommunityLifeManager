@@ -83,6 +83,10 @@ ul.v li a:hover {
 
 /*------------------TABLE-----------------*/
 
+table {
+	border-collapse: collapse;
+}
+
 table.centered {
 	margin-left: auto;
 	margin-right: auto;
@@ -90,11 +94,10 @@ table.centered {
 
 table.bordered {
 	border: 1px solid black;
-	border-collapse: collapse;
 }
 
 td {
-	border: 1px solid black;
+	/* border: 1px solid black; */
 	text-align: center;
 	padding: 10px;
 }
@@ -110,3 +113,7 @@ input[type = submit] {
 }
 
 /*----------------------------------------*/
+
+textarea {
+	resize: none;
+}
