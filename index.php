@@ -1,7 +1,7 @@
 <?php
 	include('includes/display.inc.php');
 	include('includes/functions.inc.php');
-	
+
 	session_start();
 ?>
 
@@ -31,7 +31,7 @@
 
 		<section>
 			<?php
-			echo createOrganizationForm();
+			echo createOrganizationForm($connection);
 			?>
 		</section>
 

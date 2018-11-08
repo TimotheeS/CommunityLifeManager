@@ -97,7 +97,7 @@ function sessionInformation() {
 
 /*-----------------------------------------------------------------------------*/
 
-function createOrganizationForm() {
+function createOrganizationForm($connection) {
 	$return = '<form action="#" method="post">';
 	$return .= '<table>';
 	$return .= '<tr>';
@@ -107,7 +107,15 @@ function createOrganizationForm() {
 	$return .= '</tr> <tr>';
 	$return .= '<td> Description de l\'assocation : </td> <td> <textarea style="height: 80px; width: 400px;"> </textarea> </td>';
 	$return .= '</tr> <tr>';
-	$return .= '<td> Séléctionnez votre école </td> <td> <select value="" name="school" style="width: 400px;"> </td>';
+	$return .= '<td> Séléctionnez votre école : </td> <td> <select value="" name="school" style="width: 400px;">';
+	$return .= '<option valu ="default" selected=selected> ... </option>';
+	$query = "SELECT school_name FROM schools ORDER BY school_name";
+	$result = $connection->query($query);
+	while($row = $result->fetch_assoc()) {
+		// $temp = $row["school_name"];
+		$return .= '<option name="' .$row['school_name'] .'" value="' .$row['school_name'] .'">' .$row['school_name'] .'</option>';
+	}
+	$return .= '</select> </td>';
 	$return .= '</tr>';
 	$return .= '</table>';
 	$return .= '</form>';
