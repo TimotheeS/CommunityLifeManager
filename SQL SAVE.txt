@@ -1,51 +1,29 @@
 CREATE TABLE `users` (
-  
 	`user_id` int(10) unsigned NOT NULL,
-  
 	`role` varchar(10) NOT NULL,
-  
 	`login` varchar(20) NOT NULL,
-  
 	`pass` varchar(20) NOT NULL,
-  
 	`user_name` varchar(30) NOT NULL,
-  
 	`user_forename` varchar(30) NOT NULL,
-  
 	PRIMARY KEY (`user_id`)
-
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1
 
 CREATE TABLE `schools` (
-  
 	`school_id` int(10) unsigned NOT NULL,
-  
 	`school_name` varchar(30) NOT NULL,
-  
 	`nb_students` int(11) NOT NULL,
-  
 	`nb_organization` int(11) NOT NULL,
-  
 	`adress` varchar(100) NOT NULL,
-  
 	PRIMARY KEY (`school_id`)
-
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1
 
 CREATE TABLE `organizations` (
-  
 	`organization_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  
 	`organization_name` varchar(50) NOT NULL,
-  
 	`nb_members` int(11) NOT NULL,
-  
 	`school_id` int(10) unsigned NOT NULL,
-  
+     `organization_status` tinyint(1) NOT NULL,
 	PRIMARY KEY (`organization_id`),
-  
 	KEY `school_id` (`school_id`),
-  
 	CONSTRAINT `organizations_ibfk_1` FOREIGN KEY (`school_id`) REFERENCES `schools` (`school_id`)
-
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1
