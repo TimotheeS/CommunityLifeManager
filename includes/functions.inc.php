@@ -98,24 +98,36 @@ function sessionInformation() {
 /*-----------------------------------------------------------------------------*/
 
 function createOrganizationForm($connection) {
-	$return = '<form action="#" method="post">';
+	$return = '<form action="#" method="post" enctype="multipart/form-data">';
 	$return .= '<table>';
 	$return .= '<tr>';
 	$return .= '<td colspan=2> <h3> Créer mon association </h3> </td>';
 	$return .= '</tr> <tr>';
-	$return .= '<td> Nom de l\'assocation : </td> <td> <input type="text" style="width: 400px;"> </td>';
+	$return .= '<td> Nom de l\'assocation : </td> <td> <input type="text" name="org_name" style="width: 400px;"> </td>';
 	$return .= '</tr> <tr>';
-	$return .= '<td> Description de l\'assocation : </td> <td> <textarea style="height: 80px; width: 400px;"> </textarea> </td>';
+	$return .= '<td> Description de l\'assocation : </td> <td> <textarea name="org_description" style="height: 80px; width: 400px;"> </textarea> </td>';
 	$return .= '</tr> <tr>';
-	$return .= '<td> Séléctionnez votre école : </td> <td> <select value="" name="school" style="width: 400px;">';
-	$return .= '<option valu ="default" selected=selected> ... </option>';
+	$return .= '<td> Séléctionnez votre école : </td> <td> <select name="org_school" style="width: 400px;">';
+	$return .= '<option value ="default" selected=selected> ... </option>';
 	$query = "SELECT school_name FROM schools ORDER BY school_name";
 	$result = $connection->query($query);
 	while($row = $result->fetch_assoc()) {
-		// $temp = $row["school_name"];
-		$return .= '<option name="' .$row['school_name'] .'" value="' .$row['school_name'] .'">' .$row['school_name'] .'</option>';
+		$return .= '<option value="' .$row['school_name'] .'">' .$row['school_name'] .'</option>';
 	}
 	$return .= '</select> </td>';
+	$return .= '</tr> <tr>';
+	$return .= '<td> Joindre le compte-rendu de l\'assemblée générale : </td>';
+	$return .= '<td style="text-align: left;">';
+	$return .= '<input id="real_button" hidden="hidden" type="file" name="org_report_upl"/>';
+	$return .= '<button type="button" id="fake_button"> Choisir un fichier </button> <span id="fake_text"> Aucun fichier choisi </span> </td>';
+	$return .= '</tr> <tr>';
+	$return .= '<td> Je certifie être responsable de l\'association : </td>';
+	$return .= '<td style="text-align: left;"> <input type="checkbox" style="height: 20px; width: 20px;" name="org_responsable"> </td>';
+	$return .= '</tr> <tr>';
+	$return .= '<td> J\'accepte les conditions de la charte associative : </td>';
+	$return .= '<td style="text-align: left;"> <input type="checkbox" style="height: 20px; width: 20px;" name="org_rules"> </td>';
+	$return .= '</tr> <tr>';
+	$return .= '<td colspan=2> <input type="submit" name="org_create" style="width: 100px;"> </td>';
 	$return .= '</tr>';
 	$return .= '</table>';
 	$return .= '</form>';

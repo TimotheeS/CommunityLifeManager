@@ -112,6 +112,22 @@ input[type = submit] {
 	padding: 10px;
 }
 
+input[type = submit]:hover {
+	transition-duration: 0.5s;
+	background-color: silver;
+}
+
+#fake_button {
+	padding: 10px;
+	color: black;
+	cursor: pointer;
+}
+
+#fake_button:hover{
+	transition-duration: 0.5s;
+	background-color: silver;
+}
+
 /*----------------------------------------*/
 
 textarea {
