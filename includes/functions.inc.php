@@ -108,7 +108,7 @@ function createOrganizationForm($connection) {
 	$return .= '<td> Description de l\'assocation : </td> <td> <textarea style="height: 80px; width: 400px;"> </textarea> </td>';
 	$return .= '</tr> <tr>';
 	$return .= '<td> Séléctionnez votre école : </td> <td> <select value="" name="school" style="width: 400px;">';
-	$return .= '<option valu ="default" selected=selected> ... </option>';
+	$return .= '<option value ="default" selected=selected> ... </option>';
 	$query = "SELECT school_name FROM schools ORDER BY school_name";
 	$result = $connection->query($query);
 	while($row = $result->fetch_assoc()) {
@@ -120,6 +120,39 @@ function createOrganizationForm($connection) {
 	$return .= '</table>';
 	$return .= '</form>';
 	return $return;
+}
+
+function createSchoolForm(){
+	$return = '<form action="#" method="post">';
+	$return .= '<table>';
+	$return .= '<tr>';
+	$return .= '<td colspan=2> <h3> Inscrire une école </h3>';
+	$return .= '</tr> <tr>';
+	$return .= '<td> Nom de l\'école : </td> <td> <input type="text" style="width: 400px;" name="nomEcole"> </td>';
+	$return .= '</tr> <tr>';
+	$return .= '<td> Adresse l\'école : </td> <td> <input type="text" style="width: 400px;" name="adresseEcole"> </td>';
+	$return .= '</tr> <tr>';
+	$return .= '<td colspan=2> <input type="submit" style="width: 80px;" name="submit" value="Inscrire">';
+	$return .= '</table>';
+	$return .= '</form>';
+	return $return;
+}
+
+function createSchool($connection){
+	if(isset($_POST['submit'])){
+		$nomEcole = $_POST['nomEcole'];
+		$adresseEcole = $_POST['adresseEcole'];
+		$return = "";
+		$query = "INSERT INTO schools (school_name, nb_students, nb_organization, adress) VALUES ('$nomEcole', 0, 0, '$adresseEcole')";
+		$result = $connection->query($query);
+
+		if ($result === TRUE) {
+		    $return = "Ecole correctement inscrite";
+		} else {
+		    $return = "Error: " . $query . "<br>" . $connection->error;
+		}
+		return $return;
+	}
 }
 
 ?>

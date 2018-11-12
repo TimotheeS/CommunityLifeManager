@@ -35,10 +35,19 @@
 			?>
 		</section>
 
+		<section>
+			<?php
+			echo createSchoolForm($connection);
+			echo createSchool($connection);
+			?>
+		</section>
+
 		<aside>
 			<?php
 			echo connectionForm();
-			echo connection($connection);
+			if (isset($_POST['submit'])) {
+				echo connection($connection);
+			}
 			?>
 		</aside>
 	</body>
