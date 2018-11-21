@@ -35,14 +35,6 @@
 			echo createOrganizationForm($connection);
 			?>
 		</section>
-
-		<section>
-			<?php
-			echo createSchoolForm($connection);
-			echo createSchool($connection);
-			?>
-		</section>
-
 		<aside>
 			<?php
 			echo connectionForm();
@@ -51,26 +43,12 @@
 			}
 			?>
 		</aside>
-	</body>
-
-		<div id = "banner">
-			<?php
-			echo sessionInformation();
-			?>
-		</div>
 
 		<section>
 			<?php
-			echo createOrganizationForm($connection);
+			echo createSchoolForm("", "", "", "", "<h3> Inscrire une école </h3>", 'Pour modifier les informations de votre école, <a href="pages/modify_school.php"> Cliquez ici </a>', "Inscrire");
+			echo createSchool($connection);
 			?>
 		</section>
-
-		<aside>
-			<?php
-			echo connectionForm();
-			echo connection($connection);
-			?>
-		</aside>
-		<script src="includes/style_uploadMeetingReport.js"> </script>
 	</body>
 </html>

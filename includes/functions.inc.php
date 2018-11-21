@@ -6,7 +6,7 @@
 function db_connection() {
 	require 'conf_db.inc.php';
 	//création de la connexion
-	$connection = new mysqli($host, $login, $password, $dbname);
+	$connection = new mysqli($host, $login, $password, $dbname, $port);
 	//vérification de la connexion
 	if ($connection->connect_error) {
 	    die("Connection failed: " . $connection->connect_error);
@@ -164,32 +164,100 @@ function createOrganization($connection) {
 	return $return;
 }
 
-function createSchoolForm(){
+function createSchoolForm($nom="", $codePostal="", $ville="", $adress="", $titre="", $complement='', $nomBtn=""){
 	$return = '<form action="#" method="post">';
+	$return .= $titre;
 	$return .= '<table>';
 	$return .= '<tr>';
-	$return .= '<td colspan=2> <h3> Inscrire une école </h3>';
+	$return .= '<td colspan=2 style="text-align: left"> Nom de l\'école : </td> <td colspan=2> <input type="text" style="width: 400px;" name="nomEcole" value="'.$nom.'"> </td>';
 	$return .= '</tr> <tr>';
-	$return .= '<td> Nom de l\'école : </td> <td> <input type="text" style="width: 400px;" name="nomEcole"> </td>';
+	$return .= '<td> Code postal : </td> <td> <input type="text" style="width: 50px;" name="codePostal" value="'.$codePostal.'"> </td>';
+	$return .= '<td style="text-align: left"> Ville : </td> <td style="text-align: right"> <input type="text" style="width: 330px;" name="villeEcole" value="'.$ville.'"> </td>';
 	$return .= '</tr> <tr>';
-	$return .= '<td> Adresse l\'école : </td> <td> <input type="text" style="width: 400px;" name="adresseEcole"> </td>';
+	$return .= '<td colspan=2 style="text-align: left"> Adresse : </td> <td colspan=2> <input type="text" style="width: 400px;" name="adresseEcole" value="'.$adress.'"> </td>';
 	$return .= '</tr> <tr>';
-	$return .= '<td colspan=2> <input type="submit" style="width: 80px;" name="submit" value="Inscrire">';
+	$return .= '<td colspan=4> <input type="submit" style="width: 80px;" name="'.$nomBtn.'" value="'.$nomBtn.'">';
+	$return .= '</tr> <tr>';
 	$return .= '</table>';
+	$return .= $complement;
 	$return .= '</form>';
+
 	return $return;
 }
 
 function createSchool($connection){
-	if(isset($_POST['submit'])){
+	if(isset($_POST['Inscrire'])){
 		$nomEcole = $_POST['nomEcole'];
+		$codePostal = $_POST['codePostal'];
+		$ville = $_POST['villeEcole'];
 		$adresseEcole = $_POST['adresseEcole'];
 		$return = "";
-		$query = "INSERT INTO schools (school_name, nb_students, nb_organization, adress) VALUES ('$nomEcole', 0, 0, '$adresseEcole')";
+		$query = "INSERT INTO schools (school_name, nb_students, nb_organization, adress) VALUES ('$nomEcole', 0, 0, '$adresseEcole', '$codePostal', '$ville')";
 		$result = $connection->query($query);
 
 		if ($result === TRUE) {
 		    $return = "Ecole correctement inscrite";
+		} else {
+		    $return = "Error: " . $query . "<br>" . $connection->error;
+		}
+		return $return;
+	}
+}
+
+function alterSchoolForm($connection){
+	$return = '<form method="POST">';
+	$return .= '<table>';
+	$return .= '<tr>';
+	$return .= '<td> <h3> Modifiez les informations de votre école </h3> </td>';
+	$return .= '</tr><tr>';
+	$return .= '<td> <select name="schoolSelect">';
+		$return .= '<option value="" disabled selected hidden> Choisissez une école </option>';
+		$query = "SELECT school_id,school_name FROM schools";
+		$result = $connection->query($query);
+		if ($result->num_rows > 0) {
+		    while($row = $result->fetch_assoc()) {
+				$return .= '<option value="'.$row["school_id"];
+				if (isset($_GET['id']) AND $row["school_id"] == $_GET['id']) {
+					$return .= '" selected="selected';
+				}
+				$return .= '"> '.$row["school_name"].'</option>';
+		    }
+		}
+	$return .= '</select></td>';
+	$return .= '<td> <input type="submit" style="width: 80px;" name="chooseSchool" value="Valider"> </td>';
+	$return .= '</tr>';
+	if(isset($_GET['id'])){
+		$id = $_GET['id'];
+		$query = "SELECT school_name,adress,code_postal,ville FROM schools WHERE school_id='$id'";
+		$result = $connection->query($query);
+		if ($result->num_rows > 0) {
+		    while($row = $result->fetch_assoc()) {
+				$return .= createSchoolForm($row["school_name"], $row["code_postal"], $row["ville"], $row["adress"], "", "", "Modifier");
+			}
+		}
+	} else {
+		$return .= createSchoolForm("", "", "", "", "", "", "Modifier");
+	}
+	$return .= '</table>';
+	$return .= '</form>';
+
+	return $return;
+}
+
+function alterSchool($connection) {
+	if (isset($_POST['Modifier'])) {
+		$nomEcole = $_POST['nomEcole'];
+		$codePostal = $_POST['codePostal'];
+		$ville = $_POST['villeEcole'];
+		$adresseEcole = $_POST['adresseEcole'];
+		$return = "";
+		$id = $_GET['id'];
+		
+		$query = "UPDATE schools SET school_name = '$nomEcole', adress = '$adresseEcole', code_postal = '$codePostal', ville = '$ville' WHERE school_id = '$id' ";
+		$result = $connection->query($query);
+
+		if ($result === TRUE) {
+		    $return = "Informations correctement modifiées";
 		} else {
 		    $return = "Error: " . $query . "<br>" . $connection->error;
 		}
