@@ -32,6 +32,7 @@
 		<section>
 			<?php
 			echo createOrganizationForm($connection);
+			echo createOrganization($connection);
 			?>
 		</section>
 

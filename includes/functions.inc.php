@@ -45,7 +45,7 @@ function connection($connection) {
 			$password = $_POST['password'];
 			$query = "SELECT * FROM users WHERE login = '$login' AND pass = '$password'";
 			$result = $connection->query($query);
-			if ($result->num_rows > 0) {
+			if($result->num_rows > 0) {
 				while($row = $result->fetch_assoc()) {
 					$return = '<p style="color: red;"> Identifiants corrects. </p>';
 					session_start();
@@ -80,6 +80,7 @@ function connection($connection) {
 	return $return;
 }
 
+//fonction d'affichage d'informations sur la session en cours
 function sessionInformation() {
 	$return = '<table>';
 	$return .= '<tr>';
@@ -97,13 +98,14 @@ function sessionInformation() {
 
 /*-----------------------------------------------------------------------------*/
 
+//fonction d'affichage du formulaire de création d'associations
 function createOrganizationForm($connection) {
 	$return = '<form action="#" method="post" enctype="multipart/form-data">';
 	$return .= '<table>';
 	$return .= '<tr>';
 	$return .= '<td colspan=2> <h3> Créer mon association </h3> </td>';
 	$return .= '</tr> <tr>';
-	$return .= '<td> Nom de l\'assocation : </td> <td> <input type="text" name="org_name" style="width: 400px;"> </td>';
+	$return .= '<td> Nom de l\'assocation : </td> <td> <input type="text" name="org_name" style="width: 400px;" autocomplete="off"> </td>';
 	$return .= '</tr> <tr>';
 	$return .= '<td> Description de l\'assocation : </td> <td> <textarea name="org_description" style="height: 80px; width: 400px;"> </textarea> </td>';
 	$return .= '</tr> <tr>';
@@ -132,6 +134,54 @@ function createOrganizationForm($connection) {
 	$return .= '</table>';
 	$return .= '</form>';
 	return $return;
+}
+
+//fonction de création d'associations
+function createOrganization($connection) {
+	$return = null;
+	if(isset($_POST['org_create'])) {
+		if(isset($_POST['org_name']) && $_POST['org_name'] != "") {
+			$org_name = $_POST['org_name'];
+			$query = "SELECT organization_name FROM organizations WHERE organization_name = '$org_name'";
+			$result = $connection->query($query);
+			if($result->num_rows == 0) {
+				if(strlen($_POST['org_name']) < 50) {
+					if(stringVerify($_POST['org_name'])) {
+
+					} else {
+						$return = 'Le nom de l\'association ne peut pas contenir de cractères spéciaux.';
+					}
+				} else {
+					$return = 'Le nom de l\'assocation ne peut pas dépasser les 50 caractères.';
+				}
+			} else {
+				$return = 'Ce nom d\'association est déja utilisé.';
+			}
+		} else {
+			$return = 'Un nom d\'association est requis.';
+		}
+ 	}
+	$return = '<p>' .$return .'</p>';
+	return $return;
+}
+
+/*-----------------------------------------------------------------------------*/
+
+//fonction de validation d'une chaîne de caractères
+function stringVerify($string) {
+	$not_allowed = array("\\", "/", ":", ";", ",", "*", "?", "\"", ">", "<", "|", ".");
+    	$count = count($not_allowed);
+
+    	for($i = 0; $i<$count; $i++){
+     	$pos = strpos($string, $not_allowed[$i]);
+		if($pos === false) {
+			$verified = true;
+		} else {
+			$verified = false;
+			return $verified;
+		}
+	}
+	return $verified;
 }
 
 ?>
