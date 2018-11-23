@@ -39,7 +39,7 @@
 		<aside>
 			<?php
 			echo connectionForm();
-			if (isset($_POST['submit'])) {
+			if (isset($_POST['log_in'])) {
 				echo connection($connection);
 			}
 			?>
