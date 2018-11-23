@@ -29,13 +29,13 @@
 
 		<section>
 			<?php
-			echo alterSchoolForm($connection);
+			echo alterSchoolForm();
             if (isset($_POST['chooseSchool']) AND isset($_POST['schoolSelect'])) {
                 $id=$_POST['schoolSelect'];
                 header("Refresh: 0.1;url=modify_school.php?id=$id");
             }
             if (isset($_POST['Modifier'])) {
-                echo alterSchool($connection);
+                echo alterSchool();
             }
 			?>
             <form method="POST">

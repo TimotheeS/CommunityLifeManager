@@ -19,37 +19,17 @@
 
 		<h1> COMMUNITY LIFE MANAGER </h1>
 
-		<?php
-		$connection = db_connection();
-
-		?>
-
 		<div id = "banner">
 			<?php
-				echo sessionInformation();
+			echo sessionInformation();
 			?>
 		</div>
 
 		<section>
-			<?php
-			echo createOrganizationForm($connection);
-			echo createOrganization($connection);
-			?>
-		</section>
-		<aside>
-			<?php
-			echo connectionForm();
-			if (isset($_POST['log_in'])) {
-				echo connection($connection);
-			}
-			?>
-		</aside>
-
-		<section>
-			<?php
-			echo createSchoolForm("", "", "", "", "<h3> Inscrire une école </h3>", 'Pour modifier les informations de votre école, <a href="pages/modify_school.php"> Cliquez ici </a>', "Inscrire");
-			echo createSchool($connection);
-			?>
+			<a href="pages/user_connection.php"> Se connecter </a> <br/>
+			<a href="pages/school_creation.php"> Inscrire son école </a> <br/>
+			<a href="pages/school_modification.php"> Modifier son école </a> <br/>
+			<a href="pages/org_creation.php"> Inscrire son association </a> <br/>
 		</section>
 	</body>
 </html>

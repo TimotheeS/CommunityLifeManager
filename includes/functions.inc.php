@@ -37,7 +37,8 @@ function connectionForm() {
 }
 
 //fonction de vérification des identifiants/mots de passe dans la base de données
-function connection($connection) {
+function connection() {
+	$connection = db_connection();
 	$return = null;
 	if(isset($_POST['log_in'])) {
 		if($_POST['login'] != "" && $_POST['password'] != "") {
@@ -57,7 +58,7 @@ function connection($connection) {
 						$_SESSION['user_name'] = $row['user_name'];
 						$_SESSION['user_forename'] = $row['user_forename'];
 					}
-					header('location: index.php');
+					header('location: ../index.php');
 				}
 			} else {
 				$return = '<p style="color: red;"> Identifiants incorrects. </p>';
@@ -99,7 +100,8 @@ function sessionInformation() {
 /*-----------------------------------------------------------------------------*/
 
 //fonction d'affichage du formulaire de création d'associations
-function createOrganizationForm($connection) {
+function createOrganizationForm() {
+	$connection = db_connection();
 	$return = '<form action="#" method="post" enctype="multipart/form-data">';
 	$return .= '<table>';
 	$return .= '<tr>';
@@ -133,11 +135,13 @@ function createOrganizationForm($connection) {
 	$return .= '</tr>';
 	$return .= '</table>';
 	$return .= '</form>';
+	$connection->close();
 	return $return;
 }
 
 //fonction de création d'associations
-function createOrganization($connection) {
+function createOrganization() {
+	$connection = db_connection();
 	$return = null;
 	if(isset($_POST['org_create'])) {
 		if(isset($_POST['org_name']) && $_POST['org_name'] != "") {
@@ -157,6 +161,7 @@ function createOrganization($connection) {
 			} else {
 				$return = 'Ce nom d\'association est déja utilisé.';
 			}
+			$connection->close();
 		} else {
 			$return = 'Un nom d\'association est requis.';
 		}
@@ -207,7 +212,8 @@ function createSchoolForm($nom="", $codePostal="", $ville="", $adress="", $titre
 	return $return;
 }
 
-function createSchool($connection){
+function createSchool() {
+	$connection = db_connection();
 	if(isset($_POST['Inscrire'])){
 		$nomEcole = $_POST['nomEcole'];
 		$codePostal = $_POST['codePostal'];
@@ -222,11 +228,13 @@ function createSchool($connection){
 		} else {
 		    $return = "Error: " . $query . "<br>" . $connection->error;
 		}
+		$connection->close();
 		return $return;
 	}
 }
 
-function alterSchoolForm($connection){
+function alterSchoolForm() {
+	$connection = db_connection();
 	$return = '<form method="POST">';
 	$return .= '<table>';
 	$return .= '<tr>';
@@ -266,7 +274,8 @@ function alterSchoolForm($connection){
 	return $return;
 }
 
-function alterSchool($connection) {
+function alterSchool() {
+	$connection = db_connection();
 	if (isset($_POST['Modifier'])) {
 		$nomEcole = $_POST['nomEcole'];
 		$codePostal = $_POST['codePostal'];
