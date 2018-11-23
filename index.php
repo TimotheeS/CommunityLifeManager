@@ -21,11 +21,12 @@
 
 		<?php
 		$connection = db_connection();
+
 		?>
 
 		<div id = "banner">
 			<?php
-			echo sessionInformation();
+				echo sessionInformation();
 			?>
 		</div>
 
@@ -35,13 +36,20 @@
 			echo createOrganization($connection);
 			?>
 		</section>
-
 		<aside>
 			<?php
 			echo connectionForm();
-			echo connection($connection);
+			if (isset($_POST['submit'])) {
+				echo connection($connection);
+			}
 			?>
 		</aside>
-		<script src="includes/style_uploadMeetingReport.js"> </script>
+
+		<section>
+			<?php
+			echo createSchoolForm("", "", "", "", "<h3> Inscrire une école </h3>", 'Pour modifier les informations de votre école, <a href="pages/modify_school.php"> Cliquez ici </a>', "Inscrire");
+			echo createSchool($connection);
+			?>
+		</section>
 	</body>
 </html>
