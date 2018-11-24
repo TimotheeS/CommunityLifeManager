@@ -32,7 +32,7 @@
 			echo alterSchoolForm();
             if (isset($_POST['chooseSchool']) AND isset($_POST['schoolSelect'])) {
                 $id=$_POST['schoolSelect'];
-                header("Refresh: 0.1;url=modify_school.php?id=$id");
+                header("Refresh: 0;url=school_modification.php?id=$id");
             }
             if (isset($_POST['Modifier'])) {
                 echo alterSchool();

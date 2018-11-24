@@ -296,4 +296,113 @@ function alterSchool() {
 	}
 }
 
+function orgaPage() {
+	$connection = db_connection();
+	$id = $_SESSION['orgId'];
+	$query = "SELECT * FROM organizations WHERE organization_id = '$id'";
+	$result = $connection->query($query);
+	if ($result->num_rows > 0) {
+		$row = $result->fetch_assoc();
+	}
+
+	$return = '<table style="border-bottom:1px solid black;">';
+	$return .= '<tr>';
+	$return .= '<td> <h2> '.$row['organization_name'].'</h2> </td>';
+	$return .= '</tr> <tr>';
+	$return .= '<td> Membres dans l\'association '.$row['nb_members'].'</td>';
+	$return .= '</tr> </table>';
+
+	$query = "SELECT * FROM members WHERE organization_id = '$id'";
+	$result = $connection->query($query);
+
+	$return .= '<table style="border-bottom:1px solid black;">';
+	$return .= '<tr>';
+	$return .= '<td colspan=3> <h3> Membres de l\'association </h3> </td>';
+	$return .= '</tr> <tr style="border-bottom:1px solid black;">';
+	$return .= '<td> Prénom </td> <td> Nom </td> <td> Rôle </td>';
+	$return .= '</tr>';
+	if ($result->num_rows > 0) {
+		while($row = $result->fetch_assoc()) {
+			$return .= '<tr>';
+			$return .= '<td>'.$row['member_forename'].'</td>';
+			$return .= '<td>'.$row['member_name'].'</td>';
+			$return .= '<td>'.$row['member_role'].'</td>';
+			$return .= '</tr>';
+		}
+	} else {
+		$return .= '<tr> <td colspan=3> <h4> Aucun membres renseignés <h4> </td> </tr>';
+	}
+
+	$return .= '</table>';
+
+	$return .= '<form method=POST>';
+	$return .= '<input type="submit" name="gérer" value="Gérer l\'association"';
+	$return .= '</form>';
+
+	return $return;
+}
+
+function orgManagement(){
+
+}
+
+function orgListForm() {
+	$connection = db_connection();
+	// $id = $_SESSION['schoolId'];
+	// $query = "SELECT * FROM organizations WHERE school_id = '$id'";
+	// $result = $connection->query($query);
+	// if ($result->num_rows > 0) {
+	// 	$row = $result->fetch_assoc();
+	// }
+
+	// $return = '<table style="border-bottom:1px solid black;">';
+	// $return .= '<tr>';
+	// $return .= '<td> <h2> '.$row['organization_name'].'</h2> </td>';
+	$id = 1;
+	$query = "SELECT * FROM organizations WHERE school_id = '$id'";
+	$result = $connection->query($query);
+	$return = '<form action="#" method="POST">';
+	$return .= '<table> <tr>';
+	if($result->num_rows > 0)
+		$return .= '<td>'.$result->num_rows.'</td>';
+	else {
+		$return .= '<td> <h3> Aucun asociation renseignée pour cette école </h3> </td>';
+		$return .= '</tr> </table>';
+
+		return $return;
+	}
+	$return .= '</tr> </table>';
+
+
+	$return .= '<table style="border-bottom:1px solid black;">';
+	$return .= '<tr style="border-bottom:1px solid black;">';
+	$return .= '<td colspan=2> <h3> Associations </h3>  </td>';
+	$return .= '</tr>';
+
+	while($row = $result->fetch_assoc()) {
+		$return .= '<tr>';
+		$return .= '<td>'.$row['organization_name'].'</td>';
+		$return .= '<td> <input type="submit" name="org'.$row['organization_id'].'" value="Plus d\'informations"> </td>';
+		$return .= '</tr>';
+	}
+	$return .= '</table>';
+	$return .= '</form>';
+
+	return $return;
+}
+
+function orgList(){
+	$connection = db_connection();
+	$id = 1;
+	$query = "SELECT * FROM organizations WHERE school_id = '$id'";
+	$result = $connection->query($query);
+	if($result->num_rows > 0) {
+		for ($i=1; $i <= 3; $i++) {
+			if (isset($_POST["org$i"])) {
+				$_SESSION['orgId'] = $i;
+				header("Location: org_vizualisation.php");
+			}
+		}
+	}
+}
 ?>
