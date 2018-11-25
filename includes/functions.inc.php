@@ -302,29 +302,29 @@ function alterSchool() {
 function orgaPage() {
 	$connection = db_connection();
 	$id = $_SESSION['orgId'];
-	$query = "SELECT * FROM organizations WHERE organization_id = '$id'";
+	$query = "SELECT * FROM members INNER JOIN organizations ON members.organization_id = '$id' AND organizations.organization_id = '$id'";
 	$result = $connection->query($query);
+	$return = '<table style="border-bottom:1px solid black;">';
 	if ($result->num_rows > 0) {
 		$row = $result->fetch_assoc();
-	}
+		$return .= '<tr>';
+		$return .= '<td> <h2> '.$row['organization_name'].'</h2> </td>';
+		$return .= '</tr> <tr>';
+		$return .= '<td> Membres dans l\'association '.$row['nb_members'].'</td>';
+		$return .= '</tr> </table>';
 
-	$return = '<table style="border-bottom:1px solid black;">';
-	$return .= '<tr>';
-	$return .= '<td> <h2> '.$row['organization_name'].'</h2> </td>';
-	$return .= '</tr> <tr>';
-	$return .= '<td> Membres dans l\'association '.$row['nb_members'].'</td>';
-	$return .= '</tr> </table>';
+		$return .= '<table style="border-bottom:1px solid black;">';
+		$return .= '<tr>';
+		$return .= '<td colspan=3> <h3> Membres de l\'association </h3> </td>';
+		$return .= '</tr> <tr style="border-bottom:1px solid black;">';
+		$return .= '<td> Prénom </td> <td> Nom </td> <td> Rôle </td>';
+		$return .= '</tr>';
+		$return .= '<tr>';
+			$return .= '<td>'.$row['member_forename'].'</td>';
+			$return .= '<td>'.$row['member_name'].'</td>';
+			$return .= '<td>'.$row['member_role'].'</td>';
+		$return .= '</tr>';
 
-	$query = "SELECT * FROM members WHERE organization_id = '$id'";
-	$result = $connection->query($query);
-
-	$return .= '<table style="border-bottom:1px solid black;">';
-	$return .= '<tr>';
-	$return .= '<td colspan=3> <h3> Membres de l\'association </h3> </td>';
-	$return .= '</tr> <tr style="border-bottom:1px solid black;">';
-	$return .= '<td> Prénom </td> <td> Nom </td> <td> Rôle </td>';
-	$return .= '</tr>';
-	if ($result->num_rows > 0) {
 		while($row = $result->fetch_assoc()) {
 			$return .= '<tr>';
 			$return .= '<td>'.$row['member_forename'].'</td>';
@@ -333,20 +333,193 @@ function orgaPage() {
 			$return .= '</tr>';
 		}
 	} else {
-		$return .= '<tr> <td colspan=3> <h4> Aucun membres renseignés <h4> </td> </tr>';
-	}
+		$query = "SELECT * FROM organizations WHERE organization_id = '$id'";
+		$result = $connection->query($query);
+		$row = $result->fetch_assoc();
+		$return .= '<td> <h2> '.$row['organization_name'].'</h2> </td>';
+		$return .= '</tr> <tr>';
+		$return .= '<td> Membres dans l\'association '.$row['nb_members'].'</td>';
+		$return .= '</tr> </table>';
 
+		$return .= '<table style="border-bottom:1px solid black;">';
+		$return .= '<tr>';
+		$return .= '<td colspan=3> <h3> Membres de l\'association </h3> </td>';
+		$return .= '</tr> <tr style="border-bottom:1px solid black;">';
+		$return .= '<td> Prénom </td> <td> Nom </td> <td> Rôle </td>';
+		$return .= '</tr> <tr>';
+		$return .= '<td colspan=3> Aucun membres renseignés </td>';
+		$return .= '</tr>';
+	}
 	$return .= '</table>';
 
-	$return .= '<form method=POST>';
-	$return .= '<input type="submit" name="gérer" value="Gérer l\'association"';
+	$return .= '<form method="POST">';
+	$return .= '<input type="submit" name="gérer" value="Gérer l\'association">';
 	$return .= '</form>';
 
 	return $return;
 }
 
-function orgManagement(){
+function orgManagement() {
+	$connection = db_connection();
+	$id = $_SESSION['orgId'];
+	$query = "SELECT * FROM members INNER JOIN organizations ON members.organization_id = organizations.organization_id WHERE members.organization_id = 1";
+	$result = $connection->query($query);
+	$return = '<form action=';
 
+	if (isset($_POST['addMember'])) {
+		$return .= '"#addMember" method="POST">';
+	} else {
+		$return .= '"#tableau" method="POST">';
+	}
+	$return .= '<table style="border-bottom:1px solid black;">';
+	if ($result->num_rows > 0) {
+		$row = $result->fetch_assoc();
+		$return .= '<tr>';
+		$return .= '<td> <h2> '.$row['organization_name'].'</h2> </td>';
+		$return .= '</tr> <tr>';
+		$return .= '<td> Membres dans l\'association '.$row['nb_members'].'</td>';
+		$return .= '</tr> </table>';
+
+		$return .= '<table id="tableau">';
+		$return .= '<tr>';
+		$return .= '<td colspan=5> <h3> Membres de l\'association </h3> </td>';
+		$return .= '</tr> <tr style="border-bottom:1px solid black;">';
+		$return .= '<td> Prénom </td> <td> Nom </td> <td> Rôle </td> <td> </td> <td> </td>';
+		$return .= '</tr>';
+		$return .= '<tr>';
+			$return .= '<td>'.$row['member_forename'].'</td>';
+			$return .= '<td>'.$row['member_name'].'</td>';
+			$return .= '<td>'.$row['member_role'].'</td>';
+			$return .= '<td> <input type="submit" name="modify'.$row['member_id'].'" value="Modifier"> </td>';
+			$return .= '<td> <input type="submit" name="delete'.$row['member_id'].'" value="Supprimer"> </td>';
+		$return .= '</tr>';
+
+		while($row = $result->fetch_assoc()) {
+			$return .= '<tr>';
+			$return .= '<td>'.$row['member_forename'].'</td>';
+			$return .= '<td>'.$row['member_name'].'</td>';
+			$return .= '<td>'.$row['member_role'].'</td>';
+			$return .= '<td> <input type="submit" name="modify'.$row['member_id'].'" value="Modifier"> </td>';
+			$return .= '<td> <input type="submit" name="delete'.$row['member_id'].'" value="Supprimer"> </td>';
+			$return .= '</tr>';
+		}
+	} else {
+		$query = "SELECT * FROM organizations WHERE organization_id = '$id'";
+		$result = $connection->query($query);
+		$row = $result->fetch_assoc();
+		$return .= '<td> <h2> '.$row['organization_name'].'</h2> </td>';
+		$return .= '</tr> <tr>';
+		$return .= '<td> Membres dans l\'association '.$row['nb_members'].'</td>';
+		$return .= '</tr> </table>';
+
+		$return .= '<table style="border-bottom:1px solid black;">';
+		$return .= '<tr>';
+		$return .= '<td colspan=3> <h3> Membres de l\'association </h3> </td>';
+		$return .= '</tr> <tr style="border-bottom:1px solid black;">';
+		$return .= '<td> Prénom </td> <td> Nom </td> <td> Rôle </td>';
+		$return .= '</tr> <tr>';
+		$return .= '<td colspan=3> Aucun membres renseignés </td>';
+		$return .= '</tr>';
+	}
+	$return .= '<tr style="border-top:1px solid black;">';
+	$return .= '<td colspan=5> <input type="submit" name="addMembers" value="Ajouter des membres"> </td>';
+	$return .= '</tr>';
+	$return .= '</table>';
+	$return .= '</form>';
+
+	return $return;
+}
+
+function addMembersForm($forename = "", $name = "", $role = "", $btn = "addMemberValidate", $value = "Ajouter") {
+	$return = '<form action="#tableau" method="POST">';
+	$return .= '<table id="addMember">';
+	$return .= '<tr style="border-bottom:1px solid black;">';
+	$return .= '<td> Prénom </td> <td> Nom </td> <td> Rôle </td>';
+	$return .= '</tr> <tr>';
+	$return .= '<td> <input type="text" name="forename" value="'.$forename.'"> </td>';
+	$return .= '<td> <input type="text" name="name" value="'.$name.'"> </td>';
+	$return .= '<td> <input type="text" name="role" value="'.$role.'"> </td>';
+	$return .= '</tr> <tr>';
+	$return .= '<td colspan=3> <input type="submit" name="'.$btn.'" value="'.$value.'"> </td>';
+	$return .= '</tr>';
+	$return .= '</table>';
+	$return .= '</form>';
+
+	return $return;
+}
+
+function addMember() {
+	$connection = db_connection();
+	$name = $_POST['name'];
+	$forename = $_POST['forename'];
+	$role = $_POST['role'];
+	$return = "";
+	$id = $_SESSION['orgId'];
+
+	$query = "INSERT INTO members (member_forename, member_name, member_role, organization_id) VALUES ('$forename', '$name', '$role', '$id')";
+	$result = $connection->query($query);
+
+	if ($result !== TRUE) {
+	    $return = "Error: " . $query . "<br>" . $connection->error;
+	}
+	$connection->close();
+	return $return;
+}
+
+function orgManagementDelete() {
+	$connection = db_connection();
+	$id = 1;
+	$query = "SELECT * FROM members WHERE organization_id = '$id'";
+	$result = $connection->query($query);
+	if($result->num_rows > 0) {
+		while($row = $result->fetch_assoc()){
+			if (isset($_POST["delete".$row['member_id']])) {
+				$memberID = $row['member_id'];
+				$query = "DELETE FROM members WHERE member_id = '$memberID'";
+				$result = $connection->query($query);
+				header("Refresh: 0;url=org_management.php#tableau");
+				exit();
+			}
+		}
+	}
+}
+
+function orgManagementModify() {
+	$connection = db_connection();
+	$id = $_SESSION['orgId'];
+	$query = "SELECT * FROM members WHERE organization_id = '$id'";
+	$result = $connection->query($query);
+	$return = "";
+	if($result->num_rows > 0) {
+		while($row = $result->fetch_assoc()){
+			if (isset($_POST["modify".$row['member_id']])) {
+				$forename = $row['member_forename'];
+				$name = $row['member_name'];
+				$role = $row['member_role'];
+				$_SESSION['memberID'] = $row['member_id'];
+				$return = addMembersForm($forename, $name, $role, "modifyMember", "Modifier");
+			}
+		}
+	}
+	return $return;
+}
+
+function org_modify(){
+	$connection = db_connection();
+	$forename = $_POST['forename'];
+	$name = $_POST['name'];
+	$role = $_POST['role'];
+	$return = "";
+	$orgId = $_SESSION['orgId'];
+	$id = $_SESSION['memberID'];
+
+	$query = "UPDATE members SET member_forename = '$forename', member_name = '$name', member_role = '$role', organization_id = '$orgId' WHERE member_id = '$id' ";
+	$result = $connection->query($query);
+
+	if ($result !== TRUE) {
+	    $return = "Error: " . $query . "<br>" . $connection->error;
+	}
+	return $return;
 }
 
 function orgListForm() {
@@ -362,12 +535,12 @@ function orgListForm() {
 	// $return .= '<tr>';
 	// $return .= '<td> <h2> '.$row['organization_name'].'</h2> </td>';
 	$id = 1;
-	$query = "SELECT * FROM organizations WHERE school_id = '$id'";
+	$query = "SELECT * FROM organizations INNER JOIN schools ON schools.school_id = organizations.school_id WHERE organizations.school_id = '$id'";
 	$result = $connection->query($query);
 	$return = '<form action="#" method="POST">';
 	$return .= '<table> <tr>';
 	if($result->num_rows > 0)
-		$return .= '<td>'.$result->num_rows.'</td>';
+		$return .= '<td>'.$result->num_rows.' Associations trouvées</td>';
 	else {
 		$return .= '<td> <h3> Aucun asociation renseignée pour cette école </h3> </td>';
 		$return .= '</tr> </table>';
@@ -406,5 +579,13 @@ function orgList() {
 			}
 		}
 	}
+}
+
+function backBtn(){
+	$return = '<form method="POST">';
+	$return .= '<input type="submit" name="back" value="Retour">';
+	$return .= '</form>';
+
+	return $return;
 }
 ?>
