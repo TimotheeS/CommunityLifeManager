@@ -21,7 +21,7 @@
 
 		<div id = "banner">
 			<?php
-			echo sessionInformation();
+			echo sessionInformation('index');
 			?>
 		</div>
 

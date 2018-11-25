@@ -82,7 +82,7 @@ function connection() {
 }
 
 //fonction d'affichage d'informations sur la session en cours
-function sessionInformation() {
+function sessionInformation($c_page='default') {
 	$return = '<table>';
 	$return .= '<tr>';
 	if(!isset($_SESSION['user_connected'])) {
@@ -90,7 +90,10 @@ function sessionInformation() {
 	} else if(isset($_SESSION['user_connected']) && $_SESSION['user_connected'] == true) {
 		$return .= '<td class = "nb"> Connecté en tant que : </td>';
 		$return .= '<td class = "nb">' .$_SESSION['user_forename'] .' ' .$_SESSION['user_name'] .'</td>';
-		$return .= '<td class = "nb"> <form action="pages/log_out.php" method="POST"> <input type="submit" value="Se déconnecter" name="log_out"> </form> </td>';
+		if($c_page == 'index')
+			$return .= '<td class = "nb"> <form action="pages/user_log_out.php" method="POST"> <input type="submit" value="Se déconnecter" name="log_out"> </form> </td>';
+		elseif($c_page == 'default')
+			$return .= '<td class = "nb"> <form action="user_log_out.php" method="POST"> <input type="submit" value="Se déconnecter" name="log_out"> </form> </td>';
 	}
 	$return .= '</tr>';
 	$return .= '</table>';
@@ -373,7 +376,6 @@ function orgListForm() {
 	}
 	$return .= '</tr> </table>';
 
-
 	$return .= '<table style="border-bottom:1px solid black;">';
 	$return .= '<tr style="border-bottom:1px solid black;">';
 	$return .= '<td colspan=2> <h3> Associations </h3>  </td>';
@@ -391,13 +393,13 @@ function orgListForm() {
 	return $return;
 }
 
-function orgList(){
+function orgList() {
 	$connection = db_connection();
 	$id = 1;
 	$query = "SELECT * FROM organizations WHERE school_id = '$id'";
 	$result = $connection->query($query);
 	if($result->num_rows > 0) {
-		for ($i=1; $i <= 3; $i++) {
+		for ($i=1; $i <=3; $i++) {
 			if (isset($_POST["org$i"])) {
 				$_SESSION['orgId'] = $i;
 				header("Location: org_vizualisation.php");

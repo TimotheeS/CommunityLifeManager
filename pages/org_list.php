@@ -28,7 +28,7 @@
 		<section>
 			<?php
 			echo orgListForm();
-            orgList();
+            	orgList();
 			?>
 		</section>
 	</body>
