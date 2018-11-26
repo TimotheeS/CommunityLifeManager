@@ -27,7 +27,7 @@
 
 		<section>
 			<?php
-			echo createSchoolForm("", "", "", "", "<h3> Inscrire une école </h3>", 'Pour modifier les informations de votre école, <a href="school_modification.php"> Cliquez ici </a>', "Inscrire");
+			echo createSchoolForm();
 			echo createSchool();
 			?>
 		</section>

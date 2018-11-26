@@ -1,6 +1,7 @@
 <?php
 
 /*--------------------------------------------------------------------------------------------------------------*/
+/*--------------------------------------------------------------------------------------------------------------*/
 
 //fonction de connexion à la base de données
 function db_connection() {
@@ -9,12 +10,14 @@ function db_connection() {
 	$connection = new mysqli($host, $login, $password, $dbname, $port);
 	//vérification de la connexion
 	if ($connection->connect_error) {
-	    die("Connection failed: " . $connection->connect_error);
+		die("Connection failed: " . $connection->connect_error);
 	}
 	return $connection;
 }
 
 /*--------------------------------------------------------------------------------------------------------------*/
+/*--------------------------------------------------------------------------------------------------------------*/
+
 
 //fonction d'affichage du formulaire de connexion
 function connectionForm() {
@@ -51,7 +54,7 @@ function connection() {
 					$return = '<p style="color: red;"> Identifiants corrects. </p>';
 					session_start();
 					$_SESSION['user_connected'] = true;
-	                    $_SESSION['user_login'] = $login;
+					$_SESSION['user_login'] = $login;
 					$query = "SELECT user_name, user_forename FROM users WHERE login = '$login' AND pass = '$password'";
 					$result = $connection->query($query);
 					while($row = $result->fetch_assoc()) {
@@ -91,16 +94,143 @@ function sessionInformation($c_page='default') {
 		$return .= '<td class = "nb"> Connecté en tant que : </td>';
 		$return .= '<td class = "nb">' .$_SESSION['user_forename'] .' ' .$_SESSION['user_name'] .'</td>';
 		if($c_page == 'index')
-			$return .= '<td class = "nb"> <form action="pages/user_log_out.php" method="POST"> <input type="submit" value="Se déconnecter" name="log_out"> </form> </td>';
+		$return .= '<td class = "nb"> <form action="pages/user_log_out.php" method="POST"> <input type="submit" value="Se déconnecter" name="log_out"> </form> </td>';
 		elseif($c_page == 'default')
-			$return .= '<td class = "nb"> <form action="user_log_out.php" method="POST"> <input type="submit" value="Se déconnecter" name="log_out"> </form> </td>';
+		$return .= '<td class = "nb"> <form action="user_log_out.php" method="POST"> <input type="submit" value="Se déconnecter" name="log_out"> </form> </td>';
 	}
 	$return .= '</tr>';
 	$return .= '</table>';
 	return $return;
 }
 
-/*-----------------------------------------------------------------------------*/
+/*--------------------------------------------------------------------------------------------------------------*/
+/*--------------------------------------------------------------------------------------------------------------*/
+
+function createSchoolForm(){
+	$return = '<form action="#" method="post">';
+	$return .= '<table>';
+	$return .= '<tr>';
+	$return .= '<td colspan=4> <h3> Inscrire son école </td>';
+	$return .= '</tr> <tr>';
+	$return .= '<td colspan=2> Nom de l\'école : </td> <td colspan=2> <input type="text" name="school_name"> </td>';
+	$return .= '</tr> <tr>';
+	$return .= '<td> Code postal : </td> <td> <input type="text" name="school_postal"> </td>';
+	$return .= '<td> Ville : </td> <td> <input type="text" name="school_city"> </td>';
+	$return .= '</tr> <tr>';
+	$return .= '<td colspan=2> Adresse : </td> <td colspan=2> <input type="text" name="school_address"> </td>';
+	$return .= '</tr> <tr>';
+	$return .= '<td colspan=4> <input type="submit" name="school_create" value="Inscire mon école">';
+	$return .= '</tr> <tr>';
+	$return .= '</table>';
+	$return .= '</form>';
+
+	return $return;
+}
+
+function createSchool() {
+	$connection = db_connection();
+	$return = "";
+	if(isset($_POST['school_create'])) {
+		$school_name = $_POST['school_name'];
+		$school_postal = $_POST['school_postal'];
+		$school_city = $_POST['school_city'];
+		$school_address = $_POST['school_address'];
+		if($school_name != "" AND $school_postal != "" AND $school_city != "" AND $school_address != "") {
+			$query = "SELECT school_name FROM schools WHERE school_name = '$school_name'";
+			$results = $connection->query($query);
+			if($results->num_rows == 0) {
+				if(is_numeric($school_postal)) {
+					$school_complete_address = $school_address .' ' .$school_postal .' ' .$school_city;
+					$query = "INSERT INTO schools (school_name, nb_students, nb_organization, adress) VALUES ('$school_name', 0, 0, '$school_complete_address')";
+					$results = $connection->query($query);
+
+					if ($connection->affected_rows == 1) {
+						$return = "Ecole correctement inscrite";
+					} else {
+						$return = "Error: " . $query . "<br>" . $connection->error;
+					}
+					$connection->close();
+
+				} else {
+					$return = "Le code postal doit être composé de chiffres.";
+				}
+			} else {
+				$return = "Une école du même nom est déja inscrite.";
+			}
+		} else {
+				$return = "Champs requis.";
+		}
+	}
+	$return = '<p style="color: red;">' .$return .'</p>';
+	return $return;
+}
+
+function alterSchoolForm() {
+	$connection = db_connection();
+	$return = '<form method="POST">';
+	$return .= '<table>';
+	$return .= '<tr>';
+	$return .= '<td> <h3> Modifiez les informations de votre école </h3> </td>';
+	$return .= '</tr><tr>';
+	$return .= '<td> <select name="schoolSelect">';
+	$return .= '<option value="" disabled selected hidden> Choisissez une école </option>';
+	$query = "SELECT school_id,school_name FROM schools";
+	$result = $connection->query($query);
+	if ($result->num_rows > 0) {
+		while($row = $result->fetch_assoc()) {
+			$return .= '<option value="'.$row["school_id"];
+			if (isset($_GET['id']) AND $row["school_id"] == $_GET['id']) {
+				$return .= '" selected="selected';
+			}
+			$return .= '"> '.$row["school_name"].'</option>';
+		}
+	}
+	$return .= '</select></td>';
+	$return .= '<td> <input type="submit" style="width: 80px;" name="chooseSchool" value="Valider"> </td>';
+	$return .= '</tr>';
+	if(isset($_GET['id'])){
+		$id = $_GET['id'];
+		$query = "SELECT school_name,adress,code_postal,ville FROM schools WHERE school_id='$id'";
+		$result = $connection->query($query);
+		if ($result->num_rows > 0) {
+			while($row = $result->fetch_assoc()) {
+				$return .= createSchoolForm($row["school_name"], $row["code_postal"], $row["ville"], $row["adress"], "", "", "Modifier");
+			}
+		}
+	} else {
+		$return .= createSchoolForm("", "", "", "", "", "", "Modifier");
+	}
+	$return .= '</table>';
+	$return .= '</form>';
+
+	return $return;
+}
+
+function alterSchool() {
+	$connection = db_connection();
+	if (isset($_POST['Modifier'])) {
+		$nomEcole = $_POST['nomEcole'];
+		$codePostal = $_POST['codePostal'];
+		$ville = $_POST['villeEcole'];
+		$adresseEcole = $_POST['adresseEcole'];
+		$return = "";
+		$id = $_GET['id'];
+
+		$query = "UPDATE schools SET school_name = '$nomEcole', adress = '$adresseEcole', code_postal = '$codePostal', ville = '$ville' WHERE school_id = '$id' ";
+		$result = $connection->query($query);
+
+		if ($result === TRUE) {
+			$return = "Informations correctement modifiées";
+		} else {
+			$return = "Error: " . $query . "<br>" . $connection->error;
+		}
+		return $return;
+	}
+}
+
+/*--------------------------------------------------------------------------------------------------------------*/
+/*--------------------------------------------------------------------------------------------------------------*/
+
 
 //fonction d'affichage du formulaire de création d'associations
 function createOrganizationForm() {
@@ -168,135 +298,9 @@ function createOrganization() {
 		} else {
 			$return = 'Un nom d\'association est requis.';
 		}
- 	}
+	}
 	$return = '<p>' .$return .'</p>';
 	return $return;
-}
-
-/*--------------------------------------------------------------------------------------------------------------*/
-
-//fonction de validation d'une chaîne de caractères
-function stringVerify($string) {
-	$not_allowed = array("\\", "/", ":", ";", ",", "*", "?", "\"", ">", "<", "|", ".");
-    	$count = count($not_allowed);
-
-    	for($i = 0; $i<$count; $i++){
-     	$pos = strpos($string, $not_allowed[$i]);
-		if($pos === false) {
-			$verified = true;
-		} else {
-			$verified = false;
-			return $verified;
-		}
-	}
-	return $verified;
-}
-
-/*--------------------------------------------------------------------------------------------------------------*/
-
-function createSchoolForm($nom="", $codePostal="", $ville="", $adress="", $titre="", $complement='', $nomBtn=""){
-	$return = '<form action="#" method="post">';
-	$return .= $titre;
-	$return .= '<table>';
-	$return .= '<tr>';
-	$return .= '<td colspan=2 style="text-align: left"> Nom de l\'école : </td> <td colspan=2> <input type="text" style="width: 400px;" name="nomEcole" value="'.$nom.'"> </td>';
-	$return .= '</tr> <tr>';
-	$return .= '<td> Code postal : </td> <td> <input type="text" style="width: 50px;" name="codePostal" value="'.$codePostal.'"> </td>';
-	$return .= '<td style="text-align: left"> Ville : </td> <td style="text-align: right"> <input type="text" style="width: 330px;" name="villeEcole" value="'.$ville.'"> </td>';
-	$return .= '</tr> <tr>';
-	$return .= '<td colspan=2 style="text-align: left"> Adresse : </td> <td colspan=2> <input type="text" style="width: 400px;" name="adresseEcole" value="'.$adress.'"> </td>';
-	$return .= '</tr> <tr>';
-	$return .= '<td colspan=4> <input type="submit" style="width: 80px;" name="'.$nomBtn.'" value="'.$nomBtn.'">';
-	$return .= '</tr> <tr>';
-	$return .= '</table>';
-	$return .= $complement;
-	$return .= '</form>';
-
-	return $return;
-}
-
-function createSchool() {
-	$connection = db_connection();
-	if(isset($_POST['Inscrire'])){
-		$nomEcole = $_POST['nomEcole'];
-		$codePostal = $_POST['codePostal'];
-		$ville = $_POST['villeEcole'];
-		$adresseEcole = $_POST['adresseEcole'];
-		$return = "";
-		$query = "INSERT INTO schools (school_name, nb_students, nb_organization, adress) VALUES ('$nomEcole', 0, 0, '$adresseEcole', '$codePostal', '$ville')";
-		$result = $connection->query($query);
-
-		if ($result === TRUE) {
-		    $return = "Ecole correctement inscrite";
-		} else {
-		    $return = "Error: " . $query . "<br>" . $connection->error;
-		}
-		$connection->close();
-		return $return;
-	}
-}
-
-function alterSchoolForm() {
-	$connection = db_connection();
-	$return = '<form method="POST">';
-	$return .= '<table>';
-	$return .= '<tr>';
-	$return .= '<td> <h3> Modifiez les informations de votre école </h3> </td>';
-	$return .= '</tr><tr>';
-	$return .= '<td> <select name="schoolSelect">';
-		$return .= '<option value="" disabled selected hidden> Choisissez une école </option>';
-		$query = "SELECT school_id,school_name FROM schools";
-		$result = $connection->query($query);
-		if ($result->num_rows > 0) {
-		    while($row = $result->fetch_assoc()) {
-				$return .= '<option value="'.$row["school_id"];
-				if (isset($_GET['id']) AND $row["school_id"] == $_GET['id']) {
-					$return .= '" selected="selected';
-				}
-				$return .= '"> '.$row["school_name"].'</option>';
-		    }
-		}
-	$return .= '</select></td>';
-	$return .= '<td> <input type="submit" style="width: 80px;" name="chooseSchool" value="Valider"> </td>';
-	$return .= '</tr>';
-	if(isset($_GET['id'])){
-		$id = $_GET['id'];
-		$query = "SELECT school_name,adress,code_postal,ville FROM schools WHERE school_id='$id'";
-		$result = $connection->query($query);
-		if ($result->num_rows > 0) {
-		    while($row = $result->fetch_assoc()) {
-				$return .= createSchoolForm($row["school_name"], $row["code_postal"], $row["ville"], $row["adress"], "", "", "Modifier");
-			}
-		}
-	} else {
-		$return .= createSchoolForm("", "", "", "", "", "", "Modifier");
-	}
-	$return .= '</table>';
-	$return .= '</form>';
-
-	return $return;
-}
-
-function alterSchool() {
-	$connection = db_connection();
-	if (isset($_POST['Modifier'])) {
-		$nomEcole = $_POST['nomEcole'];
-		$codePostal = $_POST['codePostal'];
-		$ville = $_POST['villeEcole'];
-		$adresseEcole = $_POST['adresseEcole'];
-		$return = "";
-		$id = $_GET['id'];
-
-		$query = "UPDATE schools SET school_name = '$nomEcole', adress = '$adresseEcole', code_postal = '$codePostal', ville = '$ville' WHERE school_id = '$id' ";
-		$result = $connection->query($query);
-
-		if ($result === TRUE) {
-		    $return = "Informations correctement modifiées";
-		} else {
-		    $return = "Error: " . $query . "<br>" . $connection->error;
-		}
-		return $return;
-	}
 }
 
 function orgaPage() {
@@ -345,7 +349,7 @@ function orgaPage() {
 	return $return;
 }
 
-function orgManagement(){
+function orgManagement() {
 
 }
 
@@ -367,7 +371,7 @@ function orgListForm() {
 	$return = '<form action="#" method="POST">';
 	$return .= '<table> <tr>';
 	if($result->num_rows > 0)
-		$return .= '<td>'.$result->num_rows.'</td>';
+	$return .= '<td>'.$result->num_rows.'</td>';
 	else {
 		$return .= '<td> <h3> Aucun asociation renseignée pour cette école </h3> </td>';
 		$return .= '</tr> </table>';
@@ -407,4 +411,28 @@ function orgList() {
 		}
 	}
 }
+
+/*--------------------------------------------------------------------------------------------------------------*/
+/*--------------------------------------------------------------------------------------------------------------*/
+
+//fonction de validation d'une chaîne de caractères
+function stringVerify($string) {
+	$not_allowed = array("\\", "/", ":", ";", ",", "*", "?", "\"", ">", "<", "|", ".");
+	$count = count($not_allowed);
+
+	for($i = 0; $i<$count; $i++){
+		$pos = strpos($string, $not_allowed[$i]);
+		if($pos === false) {
+			$verified = true;
+		} else {
+			$verified = false;
+			return $verified;
+		}
+	}
+	return $verified;
+}
+
+/*--------------------------------------------------------------------------------------------------------------*/
+/*--------------------------------------------------------------------------------------------------------------*/
+
 ?>
