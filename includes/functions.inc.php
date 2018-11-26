@@ -572,7 +572,7 @@ function orgList() {
 	$query = "SELECT * FROM organizations WHERE school_id = '$id'";
 	$result = $connection->query($query);
 	if($result->num_rows > 0) {
-		for ($i=1; $i <=3; $i++) {
+		for ($i=1; $i <= $result->num_rows; $i++) {
 			if (isset($_POST["org$i"])) {
 				$_SESSION['orgId'] = $i;
 				header("Location: org_vizualisation.php");
