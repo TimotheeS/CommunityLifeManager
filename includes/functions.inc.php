@@ -498,6 +498,7 @@ function orgManagementModify() {
 				$role = $row['member_role'];
 				$_SESSION['memberID'] = $row['member_id'];
 				$return = addMembersForm($forename, $name, $role, "modifyMember", "Modifier");
+				
 			}
 		}
 	}
