@@ -28,7 +28,12 @@
 		<section>
 			<?php
 			echo orgListForm();
-            	orgList();
+            orgList();
+
+			echo backBtn();
+			if (isset($_POST['back'])) {
+                header('Location: ../index.php');
+            }
 			?>
 		</section>
 	</body>

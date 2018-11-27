@@ -44,6 +44,6 @@ realFileBtn.addEventListener("change", function() {
 		console.log(TestTexte);
 		fakeFileTxt.innerHTML = replaceSpec(TestTexte).match(/[\/\\]([\w\d\s\.\-\(\)]+)$/)[1];
 	} else {
-		fakeFileTxt.innerHTML = "Aucune image choisie.";
+		fakeFileTxt.innerHTML = "Aucun fichier choisi.";
 	}
 });

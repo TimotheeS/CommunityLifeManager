@@ -31,6 +31,11 @@
             if (isset($_POST['gérer'])) {
                 header('Location: org_management.php');
             }
+
+            echo backBtn();
+            if (isset($_POST['back'])) {
+                header('Location: org_list.php');
+            }
 			?>
 		</section>
 	</body>
