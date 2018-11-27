@@ -312,30 +312,6 @@ function createSchool() {
 	return $return;
 }
 
-<<<<<<< HEAD
-function createSchool() {
-	$connection = db_connection();
-	if(isset($_POST['Inscrire'])){
-		$nomEcole = $_POST['nomEcole'];
-		$codePostal = $_POST['codePostal'];
-		$ville = $_POST['villeEcole'];
-		$adresseEcole = $_POST['adresseEcole'];
-		$return = "";
-		$query = "INSERT INTO schools (school_name, nb_students, nb_organization, adress, code_postal, ville) VALUES ('$nomEcole', 0, 0, '$adresseEcole', '$codePostal', '$ville')";
-		$result = $connection->query($query);
-
-		if ($result === TRUE) {
-		    $return = "Ecole correctement inscrite";
-		} else {
-		    $return = "Error: " . $query . "<br>" . $connection->error;
-		}
-		$connection->close();
-		return $return;
-	}
-}
-
-=======
->>>>>>> 364b7537e329b2e533ebe9f08f3bbfb69725ca88
 function alterSchoolForm() {
 	$connection = db_connection();
 	$return = '<form method="POST">';
@@ -704,7 +680,6 @@ function orgListForm() {
 	$id = $_SESSION['schoolId'];
 	$query = "SELECT * FROM organizations INNER JOIN schools ON schools.school_id = organizations.school_id WHERE organizations.school_id = '$id'";
 	$result = $connection->query($query);
-<<<<<<< HEAD
 	$return = '<table style="border-bottom:1px solid black;">';
 	$return .= '<tr>';
 
@@ -729,13 +704,6 @@ function orgListForm() {
 		$row = $result->fetch_assoc();
 		$return .= '<td> <h2> '.$row['school_name'].'</h2> </td>';
 		$return .= '</tr> <tr>';
-=======
-	$return = '<form action="#" method="POST">';
-	$return .= '<table> <tr>';
-	if($result->num_rows > 0)
-		$return .= '<td>'.$result->num_rows.' Associations trouvées. </td>';
-	else {
->>>>>>> 364b7537e329b2e533ebe9f08f3bbfb69725ca88
 		$return .= '<td> <h3> Aucun asociation renseignée pour cette école </h3> </td>';
 		$return .= '</tr> </table>';
 
@@ -799,7 +767,6 @@ function backBtn(){
 
 	return $return;
 }
-<<<<<<< HEAD
 function searchSchoolForm(){
 	$return = '<form action="#" method="POST" style="margin-bottom:300px">';
 	$return .= '<table>';
@@ -832,10 +799,5 @@ function search_school(){
 	}
 	return $return;
 }
-=======
-
-/*--------------------------------------------------------------------------------------------------------------*/
-/*--------------------------------------------------------------------------------------------------------------*/
->>>>>>> 364b7537e329b2e533ebe9f08f3bbfb69725ca88
 
 ?>

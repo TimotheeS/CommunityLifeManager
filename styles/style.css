@@ -115,6 +115,7 @@ input[type = submit] {
 input[type = submit]:hover {
 	transition-duration: 0.5s;
 	background-color: silver;
+	cursor: pointer;
 }
 
 #fake_button {
