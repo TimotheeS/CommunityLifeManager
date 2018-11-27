@@ -28,10 +28,8 @@
 
 		<section>
 			<?php
-			echo connectionForm();
-			if (isset($_POST['log_in'])) {
-				echo connection();
-			}
+			echo signInChoiceForm();
+			echo signInChoice();
 			?>
 		</section>
 	</body>

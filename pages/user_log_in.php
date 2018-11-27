@@ -25,10 +25,11 @@
 			?>
 		</div>
 
+
 		<section>
 			<?php
-			echo createSchoolForm();
-			echo createSchool();
+			echo logInForm();
+			echo logIn();
 			?>
 		</section>
 	</body>

@@ -26,7 +26,8 @@
 		</div>
 
 		<section>
-			<a href="pages/user_connection.php"> Se connecter </a> <br/>
+			<a href="pages/user_choice_sign.php?"> Créer un compte </a> <br/>
+			<a href="pages/user_log_in.php"> Se connecter </a> <br/>
 			<a href="pages/school_creation.php"> Inscrire son école </a> <br/>
 			<a href="pages/school_modification.php"> Modifier son école </a> <br/>
 			<a href="pages/org_creation.php"> Inscrire son association </a> <br/>
