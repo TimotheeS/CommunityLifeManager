@@ -32,6 +32,7 @@
 			<a href="pages/org_creation.php"> Inscrire son association </a> <br/>
 			<a href="pages/org_list.php"> Voir la liste des assos d'une école </a> <br/>
 			<a href="pages/org_vizualisation.php"> Visualiser son association </a> <br/>
+			<a href="Pages/search_school.php"> Rechercher une école </a> <br/>
 		</section>
 	</body>
 </html>

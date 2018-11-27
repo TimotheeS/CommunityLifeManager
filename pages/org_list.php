@@ -32,7 +32,7 @@
 
 			echo backBtn();
 			if (isset($_POST['back'])) {
-                header('Location: ../index.php');
+                header('Location: search_school.php');
             }
 			?>
 		</section>

@@ -223,7 +223,7 @@ function createSchool() {
 		$ville = $_POST['villeEcole'];
 		$adresseEcole = $_POST['adresseEcole'];
 		$return = "";
-		$query = "INSERT INTO schools (school_name, nb_students, nb_organization, adress) VALUES ('$nomEcole', 0, 0, '$adresseEcole', '$codePostal', '$ville')";
+		$query = "INSERT INTO schools (school_name, nb_students, nb_organization, adress, code_postal, ville) VALUES ('$nomEcole', 0, 0, '$adresseEcole', '$codePostal', '$ville')";
 		$result = $connection->query($query);
 
 		if ($result === TRUE) {
@@ -498,7 +498,7 @@ function orgManagementModify() {
 				$role = $row['member_role'];
 				$_SESSION['memberID'] = $row['member_id'];
 				$return = addMembersForm($forename, $name, $role, "modifyMember", "Modifier");
-				
+
 			}
 		}
 	}
@@ -525,35 +525,38 @@ function org_modify(){
 
 function orgListForm() {
 	$connection = db_connection();
-	// $id = $_SESSION['schoolId'];
-	// $query = "SELECT * FROM organizations WHERE school_id = '$id'";
-	// $result = $connection->query($query);
-	// if ($result->num_rows > 0) {
-	// 	$row = $result->fetch_assoc();
-	// }
-
-	// $return = '<table style="border-bottom:1px solid black;">';
-	// $return .= '<tr>';
-	// $return .= '<td> <h2> '.$row['organization_name'].'</h2> </td>';
-	$id = 1;
+	$id = $_SESSION['schoolId'];
 	$query = "SELECT * FROM organizations INNER JOIN schools ON schools.school_id = organizations.school_id WHERE organizations.school_id = '$id'";
 	$result = $connection->query($query);
-	$return = '<form action="#" method="POST">';
-	$return .= '<table> <tr>';
-	if($result->num_rows > 0)
+	$return = '<table style="border-bottom:1px solid black;">';
+	$return .= '<tr>';
+
+	if ($result->num_rows > 0) {
+		$row = $result->fetch_assoc();
+		$return .= '<td> <h2> '.$row['school_name'].'</h2> </td>';
+		$return .= '</tr> </table>';
+		$return = '<form action="#" method="POST">';
+		$return .= '<table> <tr>';
 		$return .= '<td>'.$result->num_rows.' Associations trouvées</td>';
-	else {
+		$return .= '</tr> </table>';
+		$return .= '<table style="border-bottom:1px solid black;">';
+		$return .= '<tr style="border-bottom:1px solid black;">';
+		$return .= '<td colspan=2> <h3> Associations </h3>  </td>';
+		$return .= '</tr> <tr>';
+		$return .= '<td>'.$row['organization_name'].'</td>';
+		$return .= '<td> <input type="submit" name="org'.$row['organization_id'].'" value="Plus d\'informations"> </td>';
+		$return .= '</tr>';
+	} else {
+		$query = "SELECT * FROM schools WHERE school_id='$id'";
+		$result = $connection->query($query);
+		$row = $result->fetch_assoc();
+		$return .= '<td> <h2> '.$row['school_name'].'</h2> </td>';
+		$return .= '</tr> <tr>';
 		$return .= '<td> <h3> Aucun asociation renseignée pour cette école </h3> </td>';
 		$return .= '</tr> </table>';
 
 		return $return;
 	}
-	$return .= '</tr> </table>';
-
-	$return .= '<table style="border-bottom:1px solid black;">';
-	$return .= '<tr style="border-bottom:1px solid black;">';
-	$return .= '<td colspan=2> <h3> Associations </h3>  </td>';
-	$return .= '</tr>';
 
 	while($row = $result->fetch_assoc()) {
 		$return .= '<tr>';
@@ -589,4 +592,37 @@ function backBtn(){
 
 	return $return;
 }
+function searchSchoolForm(){
+	$return = '<form action="#" method="POST" style="margin-bottom:300px">';
+	$return .= '<table>';
+	$return .= '<tr>';
+	$return .= '<td colspan=2> <h3> Trouver votre école : </h3> </td>';
+	$return .= '</tr> <tr>';
+	$return .= '<td> <input type="text" id="school_id" onkeyup="autocomplet()" name="toSearch"> <ul id="school_list_id"></ul> </td> </td>';
+	$return .= '<td> <input type="submit" name="search" value="Rechercher"> </td>';
+	$return .= '</tr>';
+	$return .= '</table>';
+	$return .= '</form>';
+
+	return $return;
+}
+
+function search_school(){
+	if (isset($_POST['search']) && $_POST['toSearch'] != "") {
+		$connection = db_connection();
+		$toSearch = $_POST['toSearch'];
+		$query = "SELECT * FROM schools WHERE school_name = '$toSearch'";
+		$result = $connection->query($query);
+		if($result->num_rows > 0){
+			while ($row = $result->fetch_assoc()) {
+				$_SESSION['schoolId'] = $row['school_id'];
+				header('Location: org_list.php');
+			}
+		}	else {
+			$return = "L'école recherchée n'existe pas";
+		}
+	}
+	return $return;
+}
+
 ?>
