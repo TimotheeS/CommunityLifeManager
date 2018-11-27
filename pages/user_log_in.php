@@ -30,6 +30,8 @@
 			<?php
 			echo logInForm();
 			echo logIn();
+
+			echo displayBackBtn();
 			?>
 		</section>
 	</body>

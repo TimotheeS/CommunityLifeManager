@@ -30,6 +30,7 @@
 			<?php
 			echo signInForm();
 			echo signIn();
+			echo displayBackBtn();
 			?>
 		</section>
 	</body>

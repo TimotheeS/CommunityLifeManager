@@ -84,6 +84,7 @@ function signInForm() {
         $results = $connection->query($query);
         $return .= '<td> Sélectionnez votre école </td>';
         $return .= '<td> <select name="user_school">';
+        $return .= '<option value="" disabled selected hidden> Choisissez une école </option>';
         while($row = $results->fetch_assoc()) {
     		$return .= '<option value="' .$row['school_id'] .'">' .$row['school_name'] .'</option>';
     	}
@@ -191,20 +192,16 @@ function logIn() {
             $result = $connection->query($query);
             if($result->num_rows == 0) {
     			$query = "SELECT * FROM users WHERE user_login = '$login' AND user_pass = '$password' AND user_validated = 1";
-    			$result = $connection->query($query);
-    			if($result->num_rows > 0) {
-    				while($row = $result->fetch_assoc()) {
+    			$results = $connection->query($query);
+    			if($results->num_rows > 0) {
+    				while($row = $results->fetch_assoc()) {
     					$return = 'Identifiants corrects.';
     					session_start();
     					$_SESSION['user_connected'] = true;
-    					$_SESSION['user_login'] = $login;
-    					$query = "SELECT user_name, user_forename, user_role FROM users WHERE user_login = '$login' AND user_pass = '$password'";
-    					$result = $connection->query($query);
-    					while($row = $result->fetch_assoc()) {
-    						$_SESSION['user_name'] = $row['user_name'];
-    						$_SESSION['user_forename'] = $row['user_forename'];
-                            $_SESSION['user_role'] = $row['user_role'];
-    					}
+    					$_SESSION['user_login'] = $row['user_log'];;
+						$_SESSION['user_name'] = $row['user_name'];
+						$_SESSION['user_forename'] = $row['user_forename'];
+                        $_SESSION['user_role'] = $row['user_role'];
     					header('location: ../index.php');
     				}
     			} else {
@@ -240,10 +237,25 @@ function sessionInformation($c_page='default') {
 	} else if(isset($_SESSION['user_connected']) && $_SESSION['user_connected'] == true) {
 		$return .= '<td class = "nb"> Connecté en tant que : </td>';
 		$return .= '<td class = "nb">' .$_SESSION['user_forename'] .' ' .$_SESSION['user_name'] .'</td>';
+        switch($_SESSION['user_role']) {
+               case 1 :
+               $user_role = 'Utilisateur';
+               break;
+               case 2 :
+               $user_role = 'Manager VA';
+               break;
+               case 3:
+               $user_role = 'Administrateur';
+               break;
+               default:
+               $user_role = 'Utilisateur';
+               break;
+        }
+        $return .= '<td class = "nb"> Profil : ' .$user_role .'</td>';
 		if($c_page == 'index')
-		$return .= '<td class = "nb"> <form action="pages/user_log_out.php" method="POST"> <input type="submit" value="Se déconnecter" name="log_out"> </form> </td>';
-		elseif($c_page == 'default')
-		$return .= '<td class = "nb"> <form action="user_log_out.php" method="POST"> <input type="submit" value="Se déconnecter" name="log_out"> </form> </td>';
+		      $return .= '<td class = "nb"> <form action="pages/user_log_out.php" method="POST"> <input type="submit" value="Se déconnecter" name="log_out"> </form> </td>';
+		else if($c_page == 'default')
+		      $return .= '<td class = "nb"> <form action="user_log_out.php" method="POST"> <input type="submit" value="Se déconnecter" name="log_out"> </form> </td>';
 	}
 	$return .= '</tr>';
 	$return .= '</table>';
@@ -288,7 +300,7 @@ function createSchool() {
 			if($results->num_rows == 0) {
 				if(is_numeric($school_postal)) {
 					$school_complete_address = $school_address .' ' .$school_postal .' ' .$school_city;
-					$query = "INSERT INTO schools (school_name, nb_students, nb_organization, adress) VALUES ('$school_name', 0, 0, '$school_complete_address')";
+					$query = "INSERT INTO schools (school_name, school_nb_students, school_nb_organization, school_adress) VALUES ('$school_name', 0, 0, '$school_complete_address')";
 					$results = $connection->query($query);
 
 					if ($connection->affected_rows == 1) {
@@ -305,7 +317,7 @@ function createSchool() {
 				$return = "Une école du même nom est déja inscrite.";
 			}
 		} else {
-				$return = "Champs requis.";
+				$return = "Veuillez remplir les champs requis.";
 		}
 	}
 	$return = '<p style="color: red;">' .$return .'</p>';
@@ -337,7 +349,7 @@ function alterSchoolForm() {
 	$return .= '</tr>';
 	if(isset($_GET['id'])){
 		$id = $_GET['id'];
-		$query = "SELECT school_name,adress,code_postal,ville FROM schools WHERE school_id='$id'";
+		$query = "SELECT school_name, school_adress, school_postal, school_city FROM schools WHERE school_id='$id'";
 		$result = $connection->query($query);
 		if ($result->num_rows > 0) {
 			while($row = $result->fetch_assoc()) {
@@ -363,7 +375,7 @@ function alterSchool() {
 		$return = "";
 		$id = $_GET['id'];
 
-		$query = "UPDATE schools SET school_name = '$nomEcole', adress = '$adresseEcole', code_postal = '$codePostal', ville = '$ville' WHERE school_id = '$id' ";
+		$query = "UPDATE schools SET school_name = '$nomEcole', school_adress = '$adresseEcole', school_postal = '$codePostal', school_city = '$ville' WHERE school_id = '$id' ";
 		$result = $connection->query($query);
 
 		if ($result === TRUE) {
@@ -454,7 +466,7 @@ function createOrganization() {
 function orgaPage() {
 	$connection = db_connection();
 	$id = $_SESSION['orgId'];
-	$query = "SELECT * FROM members INNER JOIN organizations ON members.organization_id = '$id' AND organizations.organization_id = '$id'";
+	$query = "SELECT * FROM members INNER JOIN organizations ON members.member_organization_id = '$id' AND organizations.organization_id = '$id'";
 	$result = $connection->query($query);
 	$return = '<table style="border-bottom:1px solid black;">';
 	if ($result->num_rows > 0) {
@@ -514,7 +526,7 @@ function orgaPage() {
 function orgManagement() {
 	$connection = db_connection();
 	$id = $_SESSION['orgId'];
-	$query = "SELECT * FROM members INNER JOIN organizations ON members.organization_id = organizations.organization_id WHERE members.organization_id = 1";
+	$query = "SELECT * FROM members INNER JOIN organizations ON members.member_organization_id = organizations.organization_id WHERE members.member_organization_id = 1";
 	$result = $connection->query($query);
 	$return = '<form action=';
 
@@ -608,7 +620,7 @@ function addMember() {
 	$return = "";
 	$id = $_SESSION['orgId'];
 
-	$query = "INSERT INTO members (member_forename, member_name, member_role, organization_id) VALUES ('$forename', '$name', '$role', '$id')";
+	$query = "INSERT INTO members(member_forename, member_name, member_role, member_organization_id) VALUES ('$forename', '$name', '$role', '$id')";
 	$result = $connection->query($query);
 
 	if ($result !== TRUE) {
@@ -621,7 +633,7 @@ function addMember() {
 function orgManagementDelete() {
 	$connection = db_connection();
 	$id = 1;
-	$query = "SELECT * FROM members WHERE organization_id = '$id'";
+	$query = "SELECT * FROM members WHERE member_organization_id = '$id'";
 	$result = $connection->query($query);
 	if($result->num_rows > 0) {
 		while($row = $result->fetch_assoc()){
@@ -639,7 +651,7 @@ function orgManagementDelete() {
 function orgManagementModify() {
 	$connection = db_connection();
 	$id = $_SESSION['orgId'];
-	$query = "SELECT * FROM members WHERE organization_id = '$id'";
+	$query = "SELECT * FROM members WHERE member_organization_id = '$id'";
 	$result = $connection->query($query);
 	$return = "";
 	if($result->num_rows > 0) {
@@ -650,7 +662,7 @@ function orgManagementModify() {
 				$role = $row['member_role'];
 				$_SESSION['memberID'] = $row['member_id'];
 				$return = addMembersForm($forename, $name, $role, "modifyMember", "Modifier");
-				
+
 			}
 		}
 	}
@@ -666,7 +678,7 @@ function org_modify(){
 	$orgId = $_SESSION['orgId'];
 	$id = $_SESSION['memberID'];
 
-	$query = "UPDATE members SET member_forename = '$forename', member_name = '$name', member_role = '$role', organization_id = '$orgId' WHERE member_id = '$id' ";
+	$query = "UPDATE members SET member_forename = '$forename', member_name = '$name', member_role = '$role', member_organization_id = '$orgId' WHERE member_id = '$id' ";
 	$result = $connection->query($query);
 
 	if ($result !== TRUE) {
@@ -688,7 +700,7 @@ function orgListForm() {
 	// $return .= '<tr>';
 	// $return .= '<td> <h2> '.$row['organization_name'].'</h2> </td>';
 	$id = 1;
-	$query = "SELECT * FROM organizations INNER JOIN schools ON schools.school_id = organizations.school_id WHERE organizations.school_id = '$id'";
+	$query = "SELECT * FROM organizations INNER JOIN schools ON schools.school_id = organizations.organization_school_id WHERE organizations.organization_school_id = '$id'";
 	$result = $connection->query($query);
 	$return = '<form action="#" method="POST">';
 	$return .= '<table> <tr>';
@@ -722,7 +734,7 @@ function orgListForm() {
 function orgList() {
 	$connection = db_connection();
 	$id = 1;
-	$query = "SELECT * FROM organizations WHERE school_id = '$id'";
+	$query = "SELECT * FROM organizations WHERE organization_school_id = '$id'";
 	$result = $connection->query($query);
 	if($result->num_rows > 0) {
 		for ($i=1; $i <= $result->num_rows; $i++) {
@@ -757,11 +769,10 @@ function stringVerify($string) {
 /*--------------------------------------------------------------------------------------------------------------*/
 /*--------------------------------------------------------------------------------------------------------------*/
 
-function backBtn(){
-	$return = '<form method="POST">';
-	$return .= '<input type="submit" name="back" value="Retour">';
+function displayBackBtn(){
+	$return = '<form action="' .$_SERVER["HTTP_REFERER"] .'" method="POST" >';
+	$return .= '<input type="submit" name="back_page" value="Retour">';
 	$return .= '</form>';
-
 	return $return;
 }
 

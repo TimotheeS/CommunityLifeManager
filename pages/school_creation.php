@@ -1,35 +1,36 @@
 <?php
-	include('../includes/display.inc.php');
-	include('../includes/functions.inc.php');
+include('../includes/display.inc.php');
+include('../includes/functions.inc.php');
 
-	session_start();
+session_start();
 ?>
 
 <!DOCTYPE html>
 <html lang = "fr">
-	<head>
-		<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-		<link rel="stylesheet" type="text/css" href="../styles/style.css"/>
-		<title> Community Life Manager </title>
-	</head>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<link rel="stylesheet" type="text/css" href="../styles/style.css"/>
+	<title> Community Life Manager </title>
+</head>
 
-	<body>
-		<header>
-		</header>
+<body>
+	<header>
+	</header>
 
-		<h1> COMMUNITY LIFE MANAGER </h1>
+	<h1> COMMUNITY LIFE MANAGER </h1>
 
-		<div id = "banner">
-			<?php
-			echo sessionInformation();
-			?>
-		</div>
+	<div id = "banner">
+		<?php
+		echo sessionInformation();
+		?>
+	</div>
 
-		<section>
-			<?php
-			echo createSchoolForm();
-			echo createSchool();
-			?>
-		</section>
-	</body>
+	<section>
+		<?php
+		echo createSchoolForm();
+		echo createSchool();
+		echo displayBackBtn();
+		?>
+	</section>
+</body>
 </html>

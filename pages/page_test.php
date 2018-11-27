@@ -1,6 +1,8 @@
 <?php
 include('../includes/display.inc.php');
 include('../includes/functions.inc.php');
+
+session_start();
 ?>
 
 <!DOCTYPE html>
@@ -15,11 +17,7 @@ include('../includes/functions.inc.php');
 	<header>
 	</header>
 
-	<h1> MODIFIEZ LES INFORMATIONS DE VOTRE ÉCOLE  </h1>
-
-	<?php
-	$connection = db_connection();
-	?>
+	<h1> COMMUNITY LIFE MANAGER </h1>
 
 	<div id = "banner">
 		<?php
@@ -27,16 +25,9 @@ include('../includes/functions.inc.php');
 		?>
 	</div>
 
+
 	<section>
 		<?php
-		echo alterSchoolForm();
-		if (isset($_POST['chooseSchool']) AND isset($_POST['schoolSelect'])) {
-			$id=$_POST['schoolSelect'];
-			header("Refresh: 0;url=school_modification.php?id=$id");
-		}
-		if (isset($_POST['Modifier'])) {
-			echo alterSchool();
-		}
 		echo displayBackBtn();
 		?>
 	</section>
