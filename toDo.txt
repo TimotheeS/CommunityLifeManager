@@ -9,7 +9,7 @@ TO DO LIST (Final review).
 ============ UTILISATEURS ======================= OK =======
 - Inscription d'un utilisateur lambda			OK
 - Inscription d'un manager					OK
-- Inscription d'un administrateur				OK
+- Inscription d'un administrateur			   	OK
 
 ============ CONNEXIONS ========================= OK =======
 - Connexion d'un utilisateur lambda			OK
@@ -17,17 +17,17 @@ TO DO LIST (Final review).
 - Connexion d'un administrateur
 
 ============ ECOLES ============================= OK =======
-- Création d'une école
-- Modification d'une école
-- Affichage de la liste des écoles
-- Moteur de recherche des écoles
+- Création d'une école                            OK
+- Modification d'une école                        OK
+- Affichage de la liste des écoles                OK
+- Moteur de recherche des écoles                  OK
 - Affichage des détails d'une école
 
 ============ ASSOCIATIONS ======================= OK ========
-- Création d'une association
-- Modification d'une association
-- Affichage de la liste des associations
+- Création d'une association                      OK
+- Modification d'une association                  OK
+- Affichage de la liste des associations          OK
 - Moteur de recherche des associations
-- Affichage des détails d'une association
-- Ajouter un membre à une association
-- Supprimer un membre à une association
+- Affichage des détails d'une association         OK(presque)
+- Ajouter un membre à une association             OK
+- Supprimer un membre à une association           OK

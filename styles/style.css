@@ -115,6 +115,7 @@ input[type = submit] {
 input[type = submit]:hover {
 	transition-duration: 0.5s;
 	background-color: silver;
+	cursor: pointer;
 }
 
 #fake_button {
@@ -132,4 +133,26 @@ input[type = submit]:hover {
 
 textarea {
 	resize: none;
+}
+
+/*----------------------------------------*/
+ul {
+	width: 250px;
+	border: 1px solid #eaeaea;
+	position: absolute;
+	background: #f3f3f3;
+	padding: 0;
+    list-style-type: none;
+}
+ul li {
+	padding: 2px;
+	text-align: left;
+}
+ul li:hover {
+	background: #eaeaea;
+	cursor: pointer;
+}
+
+#school_list_id {
+	display: none;
 }
