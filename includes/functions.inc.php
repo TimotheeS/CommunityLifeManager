@@ -689,23 +689,8 @@ function org_modify(){
 
 function orgListForm() {
 	$connection = db_connection();
-<<<<<<< HEAD
-	// $id = $_SESSION['schoolId'];
-	// $query = "SELECT * FROM organizations WHERE school_id = '$id'";
-	// $result = $connection->query($query);
-	// if ($result->num_rows > 0) {
-	// 	$row = $result->fetch_assoc();
-	// }
-
-	// $return = '<table style="border-bottom:1px solid black;">';
-	// $return .= '<tr>';
-	// $return .= '<td> <h2> '.$row['organization_name'].'</h2> </td>';
-	$id = 1;
-	$query = "SELECT * FROM organizations INNER JOIN schools ON schools.school_id = organizations.organization_school_id WHERE organizations.organization_school_id = '$id'";
-=======
 	$id = $_SESSION['schoolId'];
 	$query = "SELECT * FROM organizations INNER JOIN schools ON schools.school_id = organizations.school_id WHERE organizations.school_id = '$id'";
->>>>>>> 99ede9ba12f521f2c4173d555f13639d130e4296
 	$result = $connection->query($query);
 	$return = '<table style="border-bottom:1px solid black;">';
 	$return .= '<tr>';
